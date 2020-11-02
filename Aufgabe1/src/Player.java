@@ -41,4 +41,8 @@ public class Player {
         }
         return board.toString();
     }
+
+    public void play() {
+        System.out.println(Game.rollDice());
+    }
 }

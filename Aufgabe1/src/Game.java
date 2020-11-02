@@ -1,6 +1,8 @@
 package Aufgabe1.src;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
 
@@ -32,13 +34,13 @@ public class Game {
             new Player(ANSI_YELLOW_BACKGROUND, "VIER"),
     };
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Game game = new Game();
         game.setupPlayingField(10, 4);
         System.exit(0);
     }
 
-    public void setupPlayingField(int distance, int playerStones) {
+    public void setupPlayingField(int distance, int playerStones) throws InterruptedException {
         for (Player player : players) {
             for (int i = 0; i < playerStones; i++) {
                 Stone newStone = new Stone(player, null);
@@ -84,6 +86,7 @@ public class Game {
             actualField = actualField.nextField;
         }
         System.out.println(this.getBoard());
+        this.play();
     }
 
     public String getBoard() {
@@ -93,5 +96,19 @@ public class Game {
             board.append("\n").append(player.getBoard());
         }
         return "Board:" + board;
+    }
+
+    public static int rollDice() {
+        return (int) (Math.random() * 6) + 1;
+    }
+
+    public void play() throws InterruptedException {
+        while (true) {
+            for (Player player : this.players) {
+                player.play();
+                System.out.println(this.getBoard());
+                TimeUnit.SECONDS.sleep(1);
+            }
+        }
     }
 }
