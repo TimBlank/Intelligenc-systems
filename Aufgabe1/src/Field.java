@@ -27,13 +27,12 @@ public class Field {
         if (speciality == Speciality.GOAL_ENTRY) {
             System.out.printf("%02d. GOAL_ENTRY %s%n", fieldId, specialPlayer.name);
             goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones);
-            specialPlayer.goals.add(goal);
         } else if (speciality == Speciality.GOAL_FIELD) {
             System.out.printf("%02d. Goal%d %s%n", fieldId, playserStones, specialPlayer.name);
+            specialPlayer.goals.add(this);
             this.specialPlayer = specialPlayer;
             if (playserStones > 1) {
                 nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones - 1);
-                specialPlayer.goals.add(nextField);
             }
         } else if (speciality == Speciality.HOUSE_EXIT) {
             System.out.printf("%02d. HOUSE_EXIT %s%n", fieldId, specialPlayer.name);
