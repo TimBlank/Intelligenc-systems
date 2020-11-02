@@ -1,8 +1,11 @@
 package src;
+import sim.engine.SimState;
+import sim.engine.Steppable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements Steppable {
     public String color;
     public String name;
     public List<Stone> stones = new ArrayList<>();
@@ -41,7 +44,8 @@ public class Player {
         return board.toString();
     }
 
-    public void play() {
-        System.out.println(Game.rollDice());
+    @Override
+    public void step(SimState state) {
+        System.out.println("Hi, step. Rolled: "+(state.random.nextInt(6)+1));
     }
 }

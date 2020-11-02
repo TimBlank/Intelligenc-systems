@@ -39,7 +39,13 @@ public class Game extends SimState {
 
     public Game(long seed) {
         super(seed);
+
+    }
+
+    public void start() {
+        super.start();
         setupPlayingField(10, 4);
+        schedule.scheduleRepeating(players[0]);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -80,7 +86,7 @@ public class Game extends SimState {
         assert lastField != null;
         lastField.setNextField(this.playingFieldStart);
 
-        System.out.println(this.playingFieldStart);
+        //System.out.println(this.playingFieldStart);
         Field actualField = this.playingFieldStart.nextField;
         while (actualField != this.playingFieldStart) {
             System.out.println(actualField);
@@ -93,7 +99,7 @@ public class Game extends SimState {
             }
             actualField = actualField.nextField;
         }
-        System.out.println(this.getBoard());
+        //System.out.println(this.getBoard());
         //this.play();
     }
 
@@ -108,15 +114,5 @@ public class Game extends SimState {
 
     public static int rollDice() {
         return (int) (Math.random() * 6) + 1;
-    }
-
-    public void play() throws InterruptedException {
-        while (true) {
-            for (Player player : this.players) {
-                player.play();
-                System.out.println(this.getBoard());
-                TimeUnit.SECONDS.sleep(1);
-            }
-        }
     }
 }
