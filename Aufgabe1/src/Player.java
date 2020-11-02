@@ -35,7 +35,7 @@ public class Player {
                 home++;
             }
         }
-        board.append(home).append("|");
+        board.append(color).append(home).append(Game.ANSI_RESET).append("|");
         for (Field field : this.fields) {
             board.append(field.getChar()).append("|");
         }
