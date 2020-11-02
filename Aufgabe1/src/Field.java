@@ -26,7 +26,7 @@ public class Field {
         this.speciality = speciality;
         if (speciality == Speciality.GOAL_ENTRY) {
             System.out.printf("%02d. GOAL_ENTRY %s%n", fieldId, specialPlayer.name);
-            goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playerStones);
+            goal = new Field(fieldId, Speciality.GOAL_FIELD, specialPlayer, stones, playerStones);
         } else if (speciality == Speciality.GOAL_FIELD) {
             System.out.printf("%02d. Goal%d %s%n", fieldId, playerStones, specialPlayer.name);
             specialPlayer.goals.add(this);
@@ -55,7 +55,7 @@ public class Field {
     }
 
     public String getChar() {
-        return (getOccupation() != null ? getOccupation().color : Game.ANSI_RESET) + "_" + Game.ANSI_RESET;
+        return fieldId+(getOccupation() != null ? getOccupation().color : Game.ANSI_RESET) + "_" + Game.ANSI_RESET;
     }
 
     public String getColor() {

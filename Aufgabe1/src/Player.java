@@ -28,8 +28,8 @@ public class Player implements Steppable {
 
     public String getBoard() {
         StringBuilder board = new StringBuilder();
-        for (Field goal : this.goals) {
-            board.append(goal.getChar()).append("|");
+        for (int i = this.goals.size() - 1; i >= 0; i--) {
+            board.append(this.goals.get(i).getChar()).append("|");
         }
         int home = 0;
         for (Stone stone : this.stones) {

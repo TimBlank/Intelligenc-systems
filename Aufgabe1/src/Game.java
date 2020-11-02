@@ -48,7 +48,7 @@ public class Game extends SimState {
         schedule.scheduleRepeating(players[0]);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Game game = new Game(12);
         doLoop(Game.class, args);
         System.exit(0);
@@ -64,7 +64,7 @@ public class Game extends SimState {
         }
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
-            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones + 1, Speciality.HOUSE_EXIT, this.players[playerId], stones, playerStones);
+            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], stones, playerStones);
             this.players[playerId].fields.add(field);
             if (lastField != null) {
                 lastField.setNextField(field);
@@ -73,7 +73,7 @@ public class Game extends SimState {
             if (this.playingFieldStart == null) {
                 this.playingFieldStart = field;
             }
-            for (int i = 0; i < distance - 2; i++) {
+            for (int i = 0; i < distance - 1; i++) {
                 field = new Field(lastField.fieldId + 1, stones);
                 this.players[playerId].fields.add(field);
                 lastField.setNextField(field);
@@ -99,7 +99,7 @@ public class Game extends SimState {
             }
             actualField = actualField.nextField;
         }
-        //System.out.println(this.getBoard());
+        System.out.println(this.getBoard());
         //this.play();
     }
 
