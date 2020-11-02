@@ -1,10 +1,13 @@
-package Aufgabe1.src;
+package src;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Game {
+import sim.engine.SimState;
+
+public class Game extends SimState {
 
     public Field playingFieldStart;
     public List<Stone> stones = new ArrayList<>();
@@ -34,13 +37,18 @@ public class Game {
             new Player(ANSI_YELLOW_BACKGROUND, "VIER"),
     };
 
+    public Game(long seed) {
+        super(seed);
+        setupPlayingField(10, 4);
+    }
+
     public static void main(String[] args) throws InterruptedException {
-        Game game = new Game();
-        game.setupPlayingField(10, 4);
+        Game game = new Game(12);
+        doLoop(Game.class, args);
         System.exit(0);
     }
 
-    public void setupPlayingField(int distance, int playerStones) throws InterruptedException {
+    public void setupPlayingField(int distance, int playerStones)  {
         for (Player player : players) {
             for (int i = 0; i < playerStones; i++) {
                 Stone newStone = new Stone(player, null);
@@ -86,7 +94,7 @@ public class Game {
             actualField = actualField.nextField;
         }
         System.out.println(this.getBoard());
-        this.play();
+        //this.play();
     }
 
     public String getBoard() {

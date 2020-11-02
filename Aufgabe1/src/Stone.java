@@ -1,4 +1,4 @@
-package Aufgabe1.src;
+package src;
 
 public class Stone {
     public Player player;

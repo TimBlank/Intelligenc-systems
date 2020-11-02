@@ -1,4 +1,4 @@
-package Aufgabe1.src;
+package src;
 import java.util.List;
 
 public class Field {
