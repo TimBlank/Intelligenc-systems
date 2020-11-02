@@ -37,9 +37,9 @@ public class Game {
         System.exit(0);
     }
 
-    public void setupPlayingField(int distance, int playserStones) {
+    public void setupPlayingField(int distance, int playerStones) {
         for (Player player : players) {
-            for (int i = 0; i < playserStones; i++) {
+            for (int i = 0; i < playerStones; i++) {
                 Stone newStone = new Stone(player, null);
                 this.stones.add(newStone);
                 player.stones.add(newStone);
@@ -47,7 +47,7 @@ public class Game {
         }
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
-            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playserStones + 1, Speciality.HOUSE_EXIT, this.players[playerId], stones, playserStones);
+            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones + 1, Speciality.HOUSE_EXIT, this.players[playerId], stones, playerStones);
             this.players[playerId].fields.add(field);
             if (lastField != null) {
                 lastField.setNextField(field);
@@ -62,7 +62,7 @@ public class Game {
                 lastField.setNextField(field);
                 lastField = field;
             }
-            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], stones, playserStones);
+            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], stones, playerStones);
             lastField.setNextField(field);
             lastField = field;
         }

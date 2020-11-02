@@ -19,20 +19,20 @@ public class Field {
     }
 
     // special fields
-    public Field(int fieldId, Speciality speciality, Player specialPlayer, List<Stone> stones, int playserStones) {
+    public Field(int fieldId, Speciality speciality, Player specialPlayer, List<Stone> stones, int playerStones) {
         this.fieldId = fieldId;
         this.stones = stones;
         this.specialPlayer = specialPlayer;
         this.speciality = speciality;
         if (speciality == Speciality.GOAL_ENTRY) {
             System.out.printf("%02d. GOAL_ENTRY %s%n", fieldId, specialPlayer.name);
-            goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones);
+            goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playerStones);
         } else if (speciality == Speciality.GOAL_FIELD) {
-            System.out.printf("%02d. Goal%d %s%n", fieldId, playserStones, specialPlayer.name);
+            System.out.printf("%02d. Goal%d %s%n", fieldId, playerStones, specialPlayer.name);
             specialPlayer.goals.add(this);
             this.specialPlayer = specialPlayer;
-            if (playserStones > 1) {
-                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones - 1);
+            if (playerStones > 1) {
+                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playerStones - 1);
             }
         } else if (speciality == Speciality.HOUSE_EXIT) {
             System.out.printf("%02d. HOUSE_EXIT %s%n", fieldId, specialPlayer.name);
