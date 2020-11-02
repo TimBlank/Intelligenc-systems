@@ -1,34 +1,40 @@
 package Aufgabe1.src;
 
+import java.util.List;
+
 public class Field {
     public int fieldId;
     public Field nextField;
-    private Player occupation = null;
     private Speciality speciality = null;
     // Jedes Spezielle Feld hat nur einen
     private Player specialPlayer = null;
     // if(goal != null) dann specialPlayer == actualPlayer testen
     public Field goal = null;
+    public List<Stone> stones;
 
     // non special field
-    public Field(int fieldId) {
+    public Field(int fieldId, List<Stone> stones) {
         this.fieldId = fieldId;
+        this.stones = stones;
         System.out.printf("%02d. FIELD%n", fieldId);
     }
 
     // special fields
-    public Field(int fieldId, Speciality speciality, Player specialPlayer, int stones) {
+    public Field(int fieldId, Speciality speciality, Player specialPlayer, List<Stone> stones, int playserStones) {
         this.fieldId = fieldId;
+        this.stones = stones;
         this.specialPlayer = specialPlayer;
         this.speciality = speciality;
         if (speciality == Speciality.GOAL_ENTRY) {
             System.out.printf("%02d. GOAL_ENTRY %s%n", fieldId, specialPlayer.name);
-            goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones);
+            goal = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones);
+            specialPlayer.goals.add(goal);
         } else if (speciality == Speciality.GOAL_FIELD) {
-            System.out.printf("%02d. Goal%d %s%n", fieldId, stones, specialPlayer.name);
+            System.out.printf("%02d. Goal%d %s%n", fieldId, playserStones, specialPlayer.name);
             this.specialPlayer = specialPlayer;
-            if (stones > 1) {
-                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones - 1);
+            if (playserStones > 1) {
+                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, stones, playserStones - 1);
+                specialPlayer.goals.add(nextField);
             }
         } else if (speciality == Speciality.HOUSE_EXIT) {
             System.out.printf("%02d. HOUSE_EXIT %s%n", fieldId, specialPlayer.name);
@@ -42,7 +48,16 @@ public class Field {
     }
 
     public Player getOccupation() {
-        return occupation;
+        for (Stone stone : this.stones) {
+            if (stone.field == this) {
+                return stone.player;
+            }
+        }
+        return null;
+    }
+
+    public String getChar() {
+        return (getOccupation() != null ? getOccupation().color : Game.ANSI_RESET) + "_" + Game.ANSI_RESET;
     }
 
     public String getColor() {
@@ -58,7 +73,7 @@ public class Field {
         return "Field{" +
                 "fieldId=" + fieldId +
                 ", nextField=" + nextField.fieldId +
-                ", occupation=" + occupation +
+                ", occupation=" + getOccupation() +
                 ", speciality=" + speciality +
                 ", specialPlayer=" + (specialPlayer == null ? "\"\"" : specialPlayer.name) +
                 ", goal=" + (goal == null ? "\"\"" : String.valueOf(goal.fieldId)) +
