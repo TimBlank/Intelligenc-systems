@@ -1,4 +1,3 @@
-package Aufgabe1.src;
 
 import java.util.List;
 
