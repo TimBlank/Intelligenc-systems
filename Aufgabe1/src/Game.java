@@ -2,15 +2,20 @@ package src;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import sim.engine.SimState;
 
 public class Game extends SimState {
 
+    //Someones House exit
     public Field playingFieldStart;
-    public List<Stone> stones = new ArrayList<>();
+
+    //Convenience Set of all Fields
+    public Set<Field> setOfAllFields = new HashSet<>();
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -30,6 +35,9 @@ public class Game extends SimState {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+    public static final int DISTANCE = 10;
+    public static final int STONES = 4;
+
     Player[] players = {
             new Player(ANSI_RED_BACKGROUND, "EINS"),
             new Player(ANSI_GREEN_BACKGROUND, "ZWEI"),
@@ -44,28 +52,24 @@ public class Game extends SimState {
 
     public void start() {
         super.start();
-        setupPlayingField(10, 4);
+        setupPlayingField(DISTANCE, STONES);
+        this.playingFieldStart.occupation = players[0];
+
         schedule.scheduleRepeating(players[0]);
     }
 
     public static void main(String[] args) {
         Game game = new Game(12);
+
         doLoop(Game.class, args);
         System.exit(0);
     }
 
     public void setupPlayingField(int distance, int playerStones)  {
-        for (Player player : players) {
-            for (int i = 0; i < playerStones; i++) {
-                Stone newStone = new Stone(player, null);
-                this.stones.add(newStone);
-                player.stones.add(newStone);
-            }
-        }
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
-            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], stones, playerStones);
-            this.players[playerId].fields.add(field);
+            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this);
+
             if (lastField != null) {
                 lastField.setNextField(field);
             }
@@ -74,12 +78,13 @@ public class Game extends SimState {
                 this.playingFieldStart = field;
             }
             for (int i = 0; i < distance - 1; i++) {
-                field = new Field(lastField.fieldId + 1, stones);
-                this.players[playerId].fields.add(field);
+                field = new Field(lastField.fieldId + 1, this);
+               ;
                 lastField.setNextField(field);
                 lastField = field;
             }
-            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], stones, playerStones);
+            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], playerStones, this);
+
             lastField.setNextField(field);
             lastField = field;
         }
@@ -89,27 +94,79 @@ public class Game extends SimState {
         //System.out.println(this.playingFieldStart);
         Field actualField = this.playingFieldStart.nextField;
         while (actualField != this.playingFieldStart) {
-            System.out.println(actualField);
+            //System.out.println(actualField);
             if (actualField.goal != null) {
                 Field actualGoalField = actualField.goal;
                 while (actualGoalField.nextField != null) {
-                    System.out.println(actualGoalField);
+                    //System.out.println(actualGoalField);
                     actualGoalField = actualGoalField.nextField;
                 }
             }
             actualField = actualField.nextField;
         }
-        System.out.println(this.getBoard());
+        //System.out.println(this.getBoard());
         //this.play();
+       for(Field f: setOfAllFields) {
+           System.out.println("Field "+f.fieldId + " is "+f.specialPlayer + "'s "+f.speciality);
+       }
+    }
+
+    /**
+     * Returns list with all occupied places BY player
+     * @param player
+     * @return
+     */
+    public List<Field> findAllStones(Player player) {
+        List<Field> a = new ArrayList<>();
+        for(Field f : setOfAllFields) {
+            if(f.occupation == player) {
+                a.add(f);
+            }
+        }
+        return a;
+    }
+
+    /**
+     * Finds Players House exit
+     * @param player
+     * @return
+     */
+    public Field findHouseExit(Player player) {
+        for(Field f : setOfAllFields) {
+            if(f.specialPlayer == player && f.speciality == Speciality.HOUSE_EXIT) {
+               return f;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Moves a stone forward by roll
+     * Should maybe check rules too in the future
+     * Returns true when moved successfully
+     * @param roll
+     * @param stone
+     * @param player
+     * @return
+     */
+    public boolean moveStone(int roll, Field stone, Player player) {
+        if(stone.getNFurtherField(roll, player) != null) {
+            Field newField = stone.getNFurtherField(roll, player);
+            stone.occupation = null;
+            newField.occupation = player;
+            return true;
+        }
+        return false;
     }
 
     public String getBoard() {
-        this.stones.get(0).field = this.playingFieldStart;
-        StringBuilder board = new StringBuilder();
-        for (Player player : this.players) {
-            board.append("\n").append(player.getBoard());
+        Field f = playingFieldStart.nextField;
+        while(f != playingFieldStart) {
+            System.out.print(f.fieldId + "|"+f.occupation.color + " ");
         }
-        return "Board:" + board;
+
+
+        return "Board:";
     }
 
     public static int rollDice() {

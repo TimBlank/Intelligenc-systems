@@ -8,9 +8,7 @@ import java.util.List;
 public class Player implements Steppable {
     public String color;
     public String name;
-    public List<Stone> stones = new ArrayList<>();
-    public List<Field> goals = new ArrayList<>();
-    public List<Field> fields = new ArrayList<>();
+
 
     public Player(String color, String name) {
         this.color = color;
@@ -22,10 +20,10 @@ public class Player implements Steppable {
         return "Player{" +
                 "color='" + color + " " + Game.ANSI_RESET + '\'' +
                 ", name='" + name + '\'' +
-                ", stones='" + stones.size() + '\'' +
                 '}';
     }
 
+    /*
     public String getBoard() {
         StringBuilder board = new StringBuilder();
         for (int i = this.goals.size() - 1; i >= 0; i--) {
@@ -43,9 +41,31 @@ public class Player implements Steppable {
         }
         return board.toString();
     }
+    */
+
 
     @Override
     public void step(SimState state) {
-        System.out.println("Hi, step. Rolled: "+(state.random.nextInt(6)+1));
+        Game game = (Game) state;
+        boolean itsYourTurn = true;
+        while(itsYourTurn) {
+            int roll = state.random.nextInt(6) + 1;
+            //Has one in the house, rolled a 6 and doesn't block itself
+            if (game.findAllStones(this).size() < Game.STONES && roll == 6 && game.findHouseExit(this).occupation != this) {
+                game.findHouseExit(this).occupation = this;
+                continue; //Do another roll!
+            }
+            //Has at least one thing out of house
+            if(game.findAllStones(this).size() > 0) {
+                List<Field> myStones = game.findAllStones(this);
+                game.moveStone(roll, myStones.get(0), this);
+                itsYourTurn = false;
+                break;
+            }
+
+
+        }
+        System.out.println(game.findAllStones(this));
+
     }
 }
