@@ -154,14 +154,31 @@ public class Game extends SimState {
      * @param player
      * @return
      */
-    public boolean moveStone(int roll, Field field, Player player) {
+    public boolean moveStone(int roll, Field stone, Player player) {
         System.out.println(this.getBoard());
-        if(field.getNFurtherField(roll, player) != null) {
-            Field newField = field.getNFurtherField(roll, player);
-            field.occupation = null;
+        if(validMove(roll, stone, player)) {
+            Field newField = stone.getNFurtherField(roll, player);
+            stone.occupation = null;
             newField.occupation = player;
             return true;
         }
+        return false;
+    }
+
+    /**
+     * Checks if you can move a stone *roll* further
+     * @param roll
+     * @param stone
+     * @param player
+     * @return
+     */
+    public boolean validMove(int roll, Field stone, Player player) {
+        if(stone.getNFurtherField(roll, player) != null) {
+            if(stone.getNFurtherField(roll, player).occupation != player) {
+                return true;
+            }
+        }
+
         return false;
     }
 

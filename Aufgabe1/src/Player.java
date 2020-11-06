@@ -46,23 +46,76 @@ public class Player implements Steppable {
     public void step(SimState state) {
         Game game = (Game) state;
         boolean itsYourTurn = true;
+        int rollsThisTurn = 0;
         while(itsYourTurn) {
+            List<Field> possibleMoves = game.findAllStones(this);
             int roll = state.random.nextInt(6) + 1;
+            List<Field> occupiedFields = game.findAllStones(this);
+            rollsThisTurn++;
+            //No pieces outside house
+            if(game.findAllStones(this).size() == 0) {
+                //Then you can roll twice again
+                if(roll != 6 && rollsThisTurn < 3) {
+                    continue; //Roll again!
+                }
+            }
+
             //Has one in the house, rolled a 6 and doesn't block itself
-            if (game.findAllStones(this).size() < Game.STONES && roll == 6 && game.findHouseExit(this).occupation != this) {
+            if (occupiedFields.size() < Game.STONES && roll == 6 && game.findHouseExit(this).occupation != this) {
                 game.findHouseExit(this).occupation = this;
                 continue; //Do another roll!
             }
-            //Has at least one thing out of house
-            if(game.findAllStones(this).size() > 0) {
-                List<Field> myStones = game.findAllStones(this);
-                game.moveStone(roll, myStones.get(0), this);
+
+            //Has a stone on the House Exit which needs to be moved
+            if(game.findHouseExit(this).occupation == this) {
+                Field f = game.findHouseExit(this);
+                while(!game.validMove(roll, f, this)) {
+                    f = f.getNFurtherField(roll, this); //Find the next piece we have to move to clear house
+                }
+                game.moveStone(roll, f, this);
                 itsYourTurn = false;
                 break;
             }
 
+            //Find all ways to kill another stone of another player
+            List<Field> killMoves = new ArrayList<>();
+            for(int i=0; i< occupiedFields.size(); i++) {
+                if(occupiedFields.get(i).getNFurtherField(roll, this) != null && occupiedFields.get(i).getNFurtherField(roll, this).occupation != this) {
+                    killMoves.add(occupiedFields.get(i));
+                }
+            }
+            if(killMoves.size() > 0) {
+                possibleMoves = killMoves;
+            }
+
+            for(int i=0; i<possibleMoves.size(); i++) {
+                if(!game.validMove(roll, possibleMoves.get(i), this)) {
+                    possibleMoves.remove(i); //Remove invalid moves
+                    i--;
+                }
+            }
+
+            //No turn possible
+            if(possibleMoves.size() == 0) {
+                itsYourTurn = false;
+                break;
+            }
+
+            Field chosenMove = chooseMove(roll,possibleMoves, game);
+            game.moveStone(roll, chosenMove, this);
+
+            //Has at least one thing out of house
+
+
+
         }
         System.out.println(game.findAllStones(this));
 
+    }
+
+    public Field chooseMove(int roll, List<Field> possibleMoves, Game game) {
+
+
+        return possibleMoves.get(0);
     }
 }
