@@ -40,9 +40,9 @@ public class Game extends SimState {
 
     Player[] players = {
             new Player(ANSI_RED_BACKGROUND, "EINS"),
-            new Player(ANSI_GREEN_BACKGROUND, "ZWEI"),
+            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI"),
             new Player(ANSI_BLUE_BACKGROUND, "DREI"),
-            new Player(ANSI_YELLOW_BACKGROUND, "VIER"),
+            new Player(ANSI_GREEN_BACKGROUND, "VIER"),
     };
 
     public Game(long seed) {
@@ -154,11 +154,11 @@ public class Game extends SimState {
      * @param player
      * @return
      */
-    public boolean moveStone(int roll, Field stone, Player player) {
+    public boolean moveStone(int roll, Field field, Player player) {
         System.out.println(this.getBoard());
-        if(validMove(roll, stone, player)) {
-            Field newField = stone.getNFurtherField(roll, player);
-            stone.occupation = null;
+        if(validMove(roll, field, player)) {
+            Field newField = field.getNFurtherField(roll, player);
+            field.occupation = null;
             newField.occupation = player;
             return true;
         }
