@@ -8,7 +8,9 @@ import java.util.List;
 public class Player implements Steppable {
     public String color;
     public String name;
-
+    public List<Field> goals = new ArrayList<>();
+    public List<Field> fields = new ArrayList<>();
+    public int homeStones = 0;
 
     public Player(String color, String name) {
         this.color = color;
@@ -20,29 +22,25 @@ public class Player implements Steppable {
         return "Player{" +
                 "color='" + color + " " + Game.ANSI_RESET + '\'' +
                 ", name='" + name + '\'' +
+                ", homeStones='" + homeStones + '\'' +
                 '}';
     }
 
-    /*
+    public void afterSetup(int playerStones) {
+        this.homeStones = playerStones;
+    }
+
     public String getBoard() {
         StringBuilder board = new StringBuilder();
         for (int i = this.goals.size() - 1; i >= 0; i--) {
             board.append(this.goals.get(i).getChar()).append("|");
         }
-        int home = 0;
-        for (Stone stone : this.stones) {
-            if (stone.field == null) {
-                home++;
-            }
-        }
-        board.append(color).append(home).append(Game.ANSI_RESET).append("|");
+        board.append(color).append(homeStones).append(Game.ANSI_RESET).append("|");
         for (Field field : this.fields) {
             board.append(field.getChar()).append("|");
         }
         return board.toString();
     }
-    */
-
 
     @Override
     public void step(SimState state) {
@@ -62,7 +60,6 @@ public class Player implements Steppable {
                 itsYourTurn = false;
                 break;
             }
-
 
         }
         System.out.println(game.findAllStones(this));

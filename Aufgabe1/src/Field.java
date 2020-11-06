@@ -33,6 +33,7 @@ public class Field {
             //System.out.printf("%02d. Goal%d %s%n", fieldId, playerStones, specialPlayer.name);
 
             this.specialPlayer = specialPlayer;
+            specialPlayer.goals.add(this);
             if (playerStones > 1) {
                 nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, playerStones - 1, game);
             }
@@ -49,11 +50,15 @@ public class Field {
 
 
     public String getColor() {
-        if (specialPlayer == null) {
-            return "#fff";
+        if (occupation == null) {
+            return Game.ANSI_RESET;
         } else {
-            return specialPlayer.color;
+            return this.occupation.color;
         }
+    }
+
+    public String getChar() {
+        return getColor() + "_" + Game.ANSI_RESET;
     }
 
     public Field getNFurtherField(int n, Player color) {

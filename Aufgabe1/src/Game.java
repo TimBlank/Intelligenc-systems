@@ -69,6 +69,7 @@ public class Game extends SimState {
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
             Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this);
+            this.players[playerId].fields.add(field);
 
             if (lastField != null) {
                 lastField.setNextField(field);
@@ -79,6 +80,7 @@ public class Game extends SimState {
             }
             for (int i = 0; i < distance - 1; i++) {
                 field = new Field(lastField.fieldId + 1, this);
+                this.players[playerId].fields.add(field);
                ;
                 lastField.setNextField(field);
                 lastField = field;
@@ -106,6 +108,9 @@ public class Game extends SimState {
         }
         //System.out.println(this.getBoard());
         //this.play();
+        for(Player player: players) {
+            player.afterSetup(playerStones);
+        }
        for(Field f: setOfAllFields) {
            System.out.println("Field "+f.fieldId + " is "+f.specialPlayer + "'s "+f.speciality);
        }
@@ -145,14 +150,15 @@ public class Game extends SimState {
      * Should maybe check rules too in the future
      * Returns true when moved successfully
      * @param roll
-     * @param stone
+     * @param field
      * @param player
      * @return
      */
-    public boolean moveStone(int roll, Field stone, Player player) {
-        if(stone.getNFurtherField(roll, player) != null) {
-            Field newField = stone.getNFurtherField(roll, player);
-            stone.occupation = null;
+    public boolean moveStone(int roll, Field field, Player player) {
+        System.out.println(this.getBoard());
+        if(field.getNFurtherField(roll, player) != null) {
+            Field newField = field.getNFurtherField(roll, player);
+            field.occupation = null;
             newField.occupation = player;
             return true;
         }
@@ -160,13 +166,12 @@ public class Game extends SimState {
     }
 
     public String getBoard() {
-        Field f = playingFieldStart.nextField;
-        while(f != playingFieldStart) {
-            System.out.print(f.fieldId + "|"+f.occupation.color + " ");
+        Field field = this.playingFieldStart;
+        StringBuilder board = new StringBuilder();
+        for (Player player : this.players) {
+            board.append("\n").append(player.getBoard());
         }
-
-
-        return "Board:";
+        return "Board:" + board;
     }
 
     public static int rollDice() {
