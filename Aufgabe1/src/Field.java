@@ -1,5 +1,4 @@
 package src;
-import java.util.List;
 
 public class Field {
     public int fieldId;
@@ -63,20 +62,21 @@ public class Field {
 
     public Field getNFurtherField(int n, Player color) {
         Field f = this;
-        for(int i=0; i< n; i++) {
+        for (int i = 0; i < n; i++) {
             //Enter Goal if passing own Goal_Entry
-            if(specialPlayer == color && speciality == Speciality.GOAL_ENTRY) {
+            if (specialPlayer == color && speciality == Speciality.GOAL_ENTRY) {
                 f = f.goal;
             } else {
                 f = f.nextField;
             }
             //When there is no field in the number further (goal end)
-            if(f == null) {
+            if (f == null) {
                 return null;
             }
         }
         return f;
     }
+
     @Override
     public String toString() {
 

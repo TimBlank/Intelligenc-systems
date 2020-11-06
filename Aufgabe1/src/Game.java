@@ -65,7 +65,7 @@ public class Game extends SimState {
         System.exit(0);
     }
 
-    public void setupPlayingField(int distance, int playerStones)  {
+    public void setupPlayingField(int distance, int playerStones) {
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
             Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this);
@@ -81,7 +81,7 @@ public class Game extends SimState {
             for (int i = 0; i < distance - 1; i++) {
                 field = new Field(lastField.fieldId + 1, this);
                 this.players[playerId].fields.add(field);
-               ;
+                ;
                 lastField.setNextField(field);
                 lastField = field;
             }
@@ -108,23 +108,24 @@ public class Game extends SimState {
         }
         //System.out.println(this.getBoard());
         //this.play();
-        for(Player player: players) {
+        for (Player player : players) {
             player.afterSetup(playerStones);
         }
-       for(Field f: setOfAllFields) {
-           System.out.println("Field "+f.fieldId + " is "+f.specialPlayer + "'s "+f.speciality);
-       }
+        for (Field f : setOfAllFields) {
+            System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
+        }
     }
 
     /**
      * Returns list with all occupied places BY player
+     *
      * @param player
      * @return
      */
     public List<Field> findAllStones(Player player) {
         List<Field> a = new ArrayList<>();
-        for(Field f : setOfAllFields) {
-            if(f.occupation == player) {
+        for (Field f : setOfAllFields) {
+            if (f.occupation == player) {
                 a.add(f);
             }
         }
@@ -133,13 +134,14 @@ public class Game extends SimState {
 
     /**
      * Finds Players House exit
+     *
      * @param player
      * @return
      */
     public Field findHouseExit(Player player) {
-        for(Field f : setOfAllFields) {
-            if(f.specialPlayer == player && f.speciality == Speciality.HOUSE_EXIT) {
-               return f;
+        for (Field f : setOfAllFields) {
+            if (f.specialPlayer == player && f.speciality == Speciality.HOUSE_EXIT) {
+                return f;
             }
         }
         return null;
@@ -149,14 +151,15 @@ public class Game extends SimState {
      * Moves a stone forward by roll
      * Should maybe check rules too in the future
      * Returns true when moved successfully
+     *
      * @param roll
      * @param field
      * @param player
      * @return
      */
     public boolean moveStone(int roll, Field field, Player player) {
-        System.out.println(this.getBoard());
-        if(validMove(roll, field, player)) {
+        System.out.println(roll + player.color + " " + this.ANSI_RESET + " " +  this.getBoard());
+        if (validMove(roll, field, player)) {
             Field newField = field.getNFurtherField(roll, player);
             field.occupation = null;
             newField.occupation = player;
@@ -167,14 +170,15 @@ public class Game extends SimState {
 
     /**
      * Checks if you can move a stone *roll* further
+     *
      * @param roll
      * @param stone
      * @param player
      * @return
      */
     public boolean validMove(int roll, Field stone, Player player) {
-        if(stone.getNFurtherField(roll, player) != null) {
-            if(stone.getNFurtherField(roll, player).occupation != player) {
+        if (stone.getNFurtherField(roll, player) != null) {
+            if (stone.getNFurtherField(roll, player).occupation != player) {
                 return true;
             }
         }
@@ -183,7 +187,6 @@ public class Game extends SimState {
     }
 
     public String getBoard() {
-        Field field = this.playingFieldStart;
         StringBuilder board = new StringBuilder();
         for (Player player : this.players) {
             board.append("\n").append(player.getBoard());
