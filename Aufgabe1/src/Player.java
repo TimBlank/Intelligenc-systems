@@ -51,6 +51,7 @@ public class Player implements Steppable {
         while (itsYourTurn) {
             List<Field> possibleMoves = game.findAllStones(this);
             int roll = state.random.nextInt(6) + 1;
+            System.out.print(color + " " + Game.ANSI_RESET + roll);
             List<Field> occupiedFields = game.findAllStones(this);
             rollsThisTurn++;
             //No pieces outside house
@@ -104,12 +105,15 @@ public class Player implements Steppable {
 
             Field chosenMove = chooseMove(roll, possibleMoves, game);
             game.moveStone(roll, chosenMove, this);
+            if (roll != 6) {
+                itsYourTurn = false;
+            }
 
             //Has at least one thing out of house
 
 
         }
-        System.out.println(game.findAllStones(this));
+//        System.out.println(game.findAllStones(this));
 
     }
 

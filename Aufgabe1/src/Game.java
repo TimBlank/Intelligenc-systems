@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import sim.engine.SimState;
+import sim.engine.Steppable;
 
 public class Game extends SimState {
 
@@ -53,9 +53,16 @@ public class Game extends SimState {
     public void start() {
         super.start();
         setupPlayingField(DISTANCE, STONES);
-        this.playingFieldStart.occupation = players[0];
 
-        schedule.scheduleRepeating(players[0]);
+        schedule.scheduleRepeating(players[0], 1, 1);
+        schedule.scheduleRepeating(players[1], 2, 1);
+        schedule.scheduleRepeating(players[2], 3, 1);
+        schedule.scheduleRepeating(players[3], 4, 1);
+        schedule.scheduleRepeating(new Steppable() {
+            public void step(SimState state) {
+                System.out.println(((Game) state).getBoard());
+            }
+        }, 5, 1);
     }
 
     public static void main(String[] args) {
@@ -158,7 +165,7 @@ public class Game extends SimState {
      * @return
      */
     public boolean moveStone(int roll, Field field, Player player) {
-        System.out.println(roll + player.color + " " + this.ANSI_RESET + " " +  this.getBoard());
+//        System.out.println(roll + player.color + " " + this.ANSI_RESET + " " +  this.getBoard());
         if (validMove(roll, field, player)) {
             Field newField = field.getNFurtherField(roll, player);
             field.occupation = null;
