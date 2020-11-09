@@ -1,5 +1,4 @@
 package src;
-import java.util.List;
 
 public class Field {
     public int fieldId;
@@ -33,6 +32,7 @@ public class Field {
             //System.out.printf("%02d. Goal%d %s%n", fieldId, playerStones, specialPlayer.name);
 
             this.specialPlayer = specialPlayer;
+            specialPlayer.goals.add(this);
             if (playerStones > 1) {
                 nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, playerStones - 1, game);
             }
@@ -49,29 +49,34 @@ public class Field {
 
 
     public String getColor() {
-        if (specialPlayer == null) {
-            return "#fff";
+        if (occupation == null) {
+            return Game.ANSI_RESET;
         } else {
-            return specialPlayer.color;
+            return this.occupation.color;
         }
+    }
+
+    public String getChar() {
+        return getColor() + "_" + Game.ANSI_RESET;
     }
 
     public Field getNFurtherField(int n, Player color) {
         Field f = this;
-        for(int i=0; i< n; i++) {
+        for (int i = 0; i < n; i++) {
             //Enter Goal if passing own Goal_Entry
-            if(specialPlayer == color && speciality == Speciality.GOAL_ENTRY) {
+            if (specialPlayer == color && speciality == Speciality.GOAL_ENTRY) {
                 f = f.goal;
             } else {
                 f = f.nextField;
             }
             //When there is no field in the number further (goal end)
-            if(f == null) {
+            if (f == null) {
                 return null;
             }
         }
         return f;
     }
+
     @Override
     public String toString() {
 
