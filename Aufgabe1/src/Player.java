@@ -9,6 +9,7 @@ import java.util.List;
 public class Player implements Steppable {
     public String color;
     public String name;
+    public int rounds = 0;
     public int order;
     /**
      * Players goal Fields.
@@ -61,6 +62,7 @@ public class Player implements Steppable {
         }
 
         Game game = (Game) state;
+        this.rounds++;
         boolean itsYourTurn = true;
         int rollsThisTurn = 0;
 
@@ -71,7 +73,7 @@ public class Player implements Steppable {
 
             possibleMoves = game.removeDoneStones(this, possibleMoves);
 
-            int roll = state.random .nextInt(6) + 1;
+            int roll = state.random.nextInt(6) + 1;
             System.out.print(color + " " + Game.ANSI_RESET + roll);
             List<Field> occupiedFields = game.findAllStones(this);
             rollsThisTurn++;

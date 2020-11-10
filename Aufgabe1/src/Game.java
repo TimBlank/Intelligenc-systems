@@ -56,8 +56,8 @@ public class Game extends SimState {
         super.start();
         setupPlayingField(DISTANCE, STONES);
 
-        for(int i=0;i<players.length;i++){
-            schedule.scheduleOnce(players[i], i+1);
+        for (int i = 0; i < players.length; i++) {
+            schedule.scheduleOnce(players[i], i + 1);
         }
         schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
@@ -80,7 +80,7 @@ public class Game extends SimState {
     public void finish() {
         System.out.println("\nRanking!");
         for (int i = 0; i < this.winners.size(); i++) {
-            System.out.println(i+1 + ". " + this.winners.get(i).name + "!");
+            System.out.println(i + 1 + ". " + this.winners.get(i).name + "(" + this.winners.get(i).rounds + ")!");
         }
     }
 
