@@ -40,9 +40,9 @@ public class Game extends SimState {
 
     Player[] players = {
             new Player(ANSI_RED_BACKGROUND, "EINS", 1),
-            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2),
-            new Player(ANSI_BLUE_BACKGROUND, "DREI",3),
-            new Player(ANSI_GREEN_BACKGROUND, "VIER",4),
+            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI", 2),
+            new Player(ANSI_BLUE_BACKGROUND, "DREI", 3),
+            new Player(ANSI_GREEN_BACKGROUND, "VIER", 4),
     };
 
     List<Player> winners = new ArrayList<Player>();
@@ -56,18 +56,17 @@ public class Game extends SimState {
         super.start();
         setupPlayingField(DISTANCE, STONES);
 
-        schedule.scheduleOnce(players[0], 1);
-        schedule.scheduleOnce(players[1], 2);
-        schedule.scheduleOnce(players[2], 3);
-        schedule.scheduleOnce(players[3], 4);
+        for(int i=0;i<players.length;i++){
+            schedule.scheduleOnce(players[i], i+1);
+        }
         schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
                 System.out.println(((Game) state).getBoard());
-                if(winners.size() == 0) {
-                    schedule.scheduleOnce(this, 5);
+                if (winners.size() == 0) {
+                    schedule.scheduleOnce(this, players.length);
                 }
             }
-        }, 5);
+        }, players.length);
     }
 
     public static void main(String[] args) {
@@ -79,9 +78,9 @@ public class Game extends SimState {
     }
 
     public void finish() {
-        System.out.println("Ranking!");
-        for(Player p : this.winners) {
-            System.out.println(p.name +"!");
+        System.out.println("\nRanking!");
+        for (int i = 0; i < this.winners.size(); i++) {
+            System.out.println(i+1 + ". " + this.winners.get(i).name + "!");
         }
     }
 
@@ -208,19 +207,20 @@ public class Game extends SimState {
 
     /**
      * Removes stones that are as far as they can go
+     *
      * @param player
      * @param fields
      */
     public List<Field> removeDoneStones(Player player, List<Field> fields) {
-        for(int i=player.goals.size()-1; i> -1; i--) {
-            if(player.goals.get(i).occupation == player) {
+        for (int i = player.goals.size() - 1; i > -1; i--) {
+            if (player.goals.get(i).occupation == player) {
                 fields.remove(fields.indexOf(player.goals.get(i)));
             } else {
                 //Once there is an empty field, everything behind isn't done yet
                 break;
             }
         }
-        return  fields;
+        return fields;
     }
 
 
