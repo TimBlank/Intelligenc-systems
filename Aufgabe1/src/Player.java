@@ -9,13 +9,23 @@ import java.util.List;
 public class Player implements Steppable {
     public String color;
     public String name;
+    public int order;
+    /**
+     * Players goal Fields.
+     */
     public List<Field> goals = new ArrayList<>();
+    /**
+     * These are the fields on this player side or ?
+     */
     public List<Field> fields = new ArrayList<>();
     public int homeStones = 0;
 
-    public Player(String color, String name) {
+    public boolean hasWon = false;
+
+    public Player(String color, String name, int order) {
         this.color = color;
         this.name = name;
+        this.order = order;
     }
 
     @Override
@@ -45,17 +55,36 @@ public class Player implements Steppable {
 
     @Override
     public void step(SimState state) {
+        //A Player who has Won doesn't get to play anymore FeelsBadMan
+        if (this.hasWon) {
+            return;
+        }
+
         Game game = (Game) state;
         boolean itsYourTurn = true;
         int rollsThisTurn = 0;
+
+        //Since the player wasn't done, we get to go again next time!
+        game.schedule.scheduleOnce(this, this.order);
         while (itsYourTurn) {
             List<Field> possibleMoves = game.findAllStones(this);
-            int roll = state.random.nextInt(6) + 1;
+
+            possibleMoves = game.removeDoneStones(this, possibleMoves);
+
+            int roll = state.random .nextInt(6) + 1;
             System.out.print(color + " " + Game.ANSI_RESET + roll);
             List<Field> occupiedFields = game.findAllStones(this);
             rollsThisTurn++;
-            //No pieces outside house
-            if (game.findAllStones(this).size() == 0) {
+
+            // All Stones outside house, but all are done means we have won!
+            if (game.findAllStones(this).size() == Game.STONES && possibleMoves.size() == 0) {
+                this.hasWon = true;
+                game.winners.add(this);
+                return;
+            }
+
+            //No pieces outside house OR all stones outside are done
+            if (game.findAllStones(this).size() == 0 || possibleMoves.size() == 0) {
                 //Then you can roll twice again
                 if (roll != 6 && rollsThisTurn < 3) {
                     continue; //Roll again!
@@ -108,6 +137,7 @@ public class Player implements Steppable {
             if (roll != 6) {
                 itsYourTurn = false;
             }
+
 
             //Has at least one thing out of house
 

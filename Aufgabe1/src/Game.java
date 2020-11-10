@@ -39,11 +39,13 @@ public class Game extends SimState {
     public static final int STONES = 4;
 
     Player[] players = {
-            new Player(ANSI_RED_BACKGROUND, "EINS"),
-            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI"),
-            new Player(ANSI_BLUE_BACKGROUND, "DREI"),
-            new Player(ANSI_GREEN_BACKGROUND, "VIER"),
+            new Player(ANSI_RED_BACKGROUND, "EINS", 1),
+            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2),
+            new Player(ANSI_BLUE_BACKGROUND, "DREI",3),
+            new Player(ANSI_GREEN_BACKGROUND, "VIER",4),
     };
+
+    List<Player> winners = new ArrayList<Player>();
 
     public Game(long seed) {
         super(seed);
@@ -54,22 +56,33 @@ public class Game extends SimState {
         super.start();
         setupPlayingField(DISTANCE, STONES);
 
-        schedule.scheduleRepeating(players[0], 1, 1);
-        schedule.scheduleRepeating(players[1], 2, 1);
-        schedule.scheduleRepeating(players[2], 3, 1);
-        schedule.scheduleRepeating(players[3], 4, 1);
-        schedule.scheduleRepeating(new Steppable() {
+        schedule.scheduleOnce(players[0], 1);
+        schedule.scheduleOnce(players[1], 2);
+        schedule.scheduleOnce(players[2], 3);
+        schedule.scheduleOnce(players[3], 4);
+        schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
                 System.out.println(((Game) state).getBoard());
+                if(winners.size() == 0) {
+                    schedule.scheduleOnce(this, 5);
+                }
             }
-        }, 5, 1);
+        }, 5);
     }
 
     public static void main(String[] args) {
         Game game = new Game(12);
 
         doLoop(Game.class, args);
+
         System.exit(0);
+    }
+
+    public void finish() {
+        System.out.println("Ranking!");
+        for(Player p : this.winners) {
+            System.out.println(p.name +"!");
+        }
     }
 
     public void setupPlayingField(int distance, int playerStones) {
@@ -193,6 +206,52 @@ public class Game extends SimState {
         return false;
     }
 
+    /**
+     * Removes stones that are as far as they can go
+     * @param player
+     * @param fields
+     */
+    public List<Field> removeDoneStones(Player player, List<Field> fields) {
+        for(int i=player.goals.size()-1; i> -1; i--) {
+            if(player.goals.get(i).occupation == player) {
+                fields.remove(fields.indexOf(player.goals.get(i)));
+            } else {
+                //Once there is an empty field, everything behind isn't done yet
+                break;
+            }
+        }
+        return  fields;
+    }
+
+
+    /**
+     * Gives you a list of Stones, ORDERED by how far they've come from your house exit
+     * The larger the index, the farther the Stone has travelled
+     *
+     * @param player
+     * @return
+     */
+    public ArrayList<Field> getOrderedStonesList(Player player) {
+        Field from = findHouseExit(player);
+        ArrayList<Field> listOfStones = new ArrayList<>(Game.STONES);
+        int distanceTravelled = 0;
+        Field origin = from;
+        do {
+            if (from.occupation == player) {
+                listOfStones.add(from);
+            }
+            from = from.nextField;
+        } while (from != origin);
+
+        for (Field g : player.goals) {
+            if (g.occupation == player) {
+                listOfStones.add(g);
+            }
+        }
+
+        return listOfStones;
+    }
+
     public String getBoard() {
         StringBuilder board = new StringBuilder();
         for (Player player : this.players) {
@@ -201,7 +260,5 @@ public class Game extends SimState {
         return "Board:" + board;
     }
 
-    public static int rollDice() {
-        return (int) (Math.random() * 6) + 1;
-    }
+
 }

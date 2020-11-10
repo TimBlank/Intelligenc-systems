@@ -60,11 +60,11 @@ public class Field {
         return getColor() + "_" + Game.ANSI_RESET;
     }
 
-    public Field getNFurtherField(int n, Player color) {
+    public Field getNFurtherField(int n, Player player) {
         Field f = this;
         for (int i = 0; i < n; i++) {
             //Enter Goal if passing own Goal_Entry
-            if (specialPlayer == color && speciality == Speciality.GOAL_ENTRY) {
+            if (specialPlayer == player && speciality == Speciality.GOAL_ENTRY) {
                 f = f.goal;
             } else {
                 f = f.nextField;
