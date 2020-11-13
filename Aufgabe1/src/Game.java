@@ -39,7 +39,7 @@ public class Game extends SimState {
     public static final int STONES = 4;
 
     Player[] players = {
-            new Player(ANSI_RED_BACKGROUND, "EINS", 1),
+            new Player (ANSI_RED_BACKGROUND, "EINS", 1),
             new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2),
             new Player(ANSI_BLUE_BACKGROUND, "DREI",3),
             new Player(ANSI_GREEN_BACKGROUND, "VIER",4),
@@ -260,5 +260,39 @@ public class Game extends SimState {
         return "Board:" + board;
     }
 
+
+    //Implements Distance for each Player Stone to all other Stones
+    public List<Field> enemyDistance (List<Field> possibleMoves, Game game)
+    {
+        List<Field> enemyPosition = new ArrayList<>();
+        //TODO alle gegnerischen Spieler auswählen
+        Player Enemy = new Player("\u001B[30m","Enemy",100);
+        for (Field f : game.setOfAllFields) {
+            if (f.occupation == Enemy) {
+                enemyPosition.add(f);
+            }
+        }
+
+        // All Stones which could theoretically move
+        int movableStones = 4;
+
+        for (int i=0;i<movableStones;i--){
+            //game.
+            //TODO alle Steine mit der Distance zum nächsten gegner abgleichen
+
+            //TODO nur wert mit geringster Disantz zum gegner speichern
+
+        }
+        //possibleMoves has only the most aggressiv move
+        return possibleMoves;
+    }
+
+    //Distance of Stone to Goal
+    public int GoalDistance (Game game){
+        int distance = 0;
+     // TODO
+        //  game.getOrderedStonesList
+        return  distance;
+    }
 
 }
