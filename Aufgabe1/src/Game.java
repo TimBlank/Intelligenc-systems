@@ -274,7 +274,8 @@ public class Game extends SimState {
         }
 
         // All Stones which could theoretically move
-        int movableStones = 4;
+        int movableStones = STONES;
+
 
         for (int i=0;i<movableStones;i--){
             //game.
@@ -285,14 +286,6 @@ public class Game extends SimState {
         }
         //possibleMoves has only the most aggressiv move
         return possibleMoves;
-    }
-
-    //Distance of Stone to Goal
-    public int GoalDistance (Game game){
-        int distance = 0;
-     // TODO
-        //  game.getOrderedStonesList
-        return  distance;
     }
 
 }
