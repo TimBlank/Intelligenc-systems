@@ -5,7 +5,7 @@ import java.util.List;
 public class AggressiveAgent extends Player {
 
     public AggressiveAgent(String color, String name, int order) {
-        super(color, name, order);
+        super(color, name, order, null);
     }
 
     // extends the ChooseMove methode for the AggressiveAgent Class

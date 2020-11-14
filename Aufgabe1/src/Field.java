@@ -3,6 +3,7 @@ package src;
 public class Field {
     public int fieldId;
     public Field nextField;
+    public Field formerField;
     public Speciality speciality = null;
     // Jedes Spezielle Feld hat nur einen
     public Player specialPlayer = null;
@@ -13,28 +14,30 @@ public class Field {
     public Player occupation;
 
     // non special field
-    public Field(int fieldId, Game game) {
+    public Field(int fieldId, Game game, Field formerField) {
         this.fieldId = fieldId;
+        this.formerField = formerField;
         game.setOfAllFields.add(this);
         //System.out.printf("%02d. FIELD%n", fieldId);
     }
 
     // special fields
-    public Field(int fieldId, Speciality speciality, Player specialPlayer, int playerStones, Game game) {
+    public Field(int fieldId, Speciality speciality, Player specialPlayer, int playerStones, Game game, Field formerField) {
         this.fieldId = fieldId;
         game.setOfAllFields.add(this);
         this.specialPlayer = specialPlayer;
         this.speciality = speciality;
+        this.formerField = formerField;
         if (speciality == Speciality.GOAL_ENTRY) {
             //System.out.printf("%02d. GOAL_ENTRY %s%n", fieldId, specialPlayer.name);
-            goal = new Field(fieldId, Speciality.GOAL_FIELD, specialPlayer, playerStones, game);
+            goal = new Field(fieldId, Speciality.GOAL_FIELD, specialPlayer, playerStones, game, formerField);
         } else if (speciality == Speciality.GOAL_FIELD) {
             //System.out.printf("%02d. Goal%d %s%n", fieldId, playerStones, specialPlayer.name);
 
             this.specialPlayer = specialPlayer;
             specialPlayer.goals.add(this);
             if (playerStones > 1) {
-                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, playerStones - 1, game);
+                nextField = new Field(fieldId + 1, Speciality.GOAL_FIELD, specialPlayer, playerStones - 1, game, this);
             }
         } else if (speciality == Speciality.HOUSE_EXIT) {
             //System.out.printf("%02d. HOUSE_EXIT %s%n", fieldId, specialPlayer.name);
@@ -44,6 +47,12 @@ public class Field {
     public void setNextField(Field nextField) {
         if (nextField != null) {
             this.nextField = nextField;
+        }
+    }
+
+    public void setFormerField(Field formerField) {
+        if (formerField != null) {
+            this.formerField = formerField;
         }
     }
 
@@ -61,20 +70,26 @@ public class Field {
     }
 
     public Field getNFurtherField(int n, Player player) {
-        Field f = this;
-        for (int i = 0; i < n; i++) {
-            //Enter Goal if passing own Goal_Entry
-            if (specialPlayer == player && speciality == Speciality.GOAL_ENTRY) {
-                f = f.goal;
-            } else {
-                f = f.nextField;
+        Field field = this;
+        if (n > 0) {
+            for (int i = 0; i < n; i++) {
+                //Enter Goal if passing own Goal_Entry
+                if (specialPlayer == player && speciality == Speciality.GOAL_ENTRY) {
+                    field = field.goal;
+                } else {
+                    field = field.nextField;
+                }
+                //When there is no field in the number further (goal end)
+                if (field == null) {
+                    return null;
+                }
             }
-            //When there is no field in the number further (goal end)
-            if (f == null) {
-                return null;
+        } else if (n < 0) {
+            for (int i = 0; i > n; i--) {
+                field = field.formerField;
             }
         }
-        return f;
+        return field;
     }
 
     @Override
@@ -83,6 +98,7 @@ public class Field {
         return "Field{" +
                 "fieldId=" + fieldId +
                 ", nextField=" + (nextField == null ? "\"\"" : nextField.fieldId) +
+                ", formerField=" + (formerField == null ? "\"\"" : formerField.fieldId) +
                 ", occupation=" + occupation +
                 ", speciality=" + speciality +
                 ", specialPlayer=" + (specialPlayer == null ? "\"\"" : specialPlayer.name) +

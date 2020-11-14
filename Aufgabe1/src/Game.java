@@ -39,10 +39,10 @@ public class Game extends SimState {
     public static final int STONES = 4;
 
     Player[] players = {
-            new Player (ANSI_RED_BACKGROUND, "EINS", 1),
-            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2),
-            new Player(ANSI_BLUE_BACKGROUND, "DREI",3),
-            new Player(ANSI_GREEN_BACKGROUND, "VIER",4),
+            new Player (ANSI_RED_BACKGROUND, "EINS", 1, new AgentType[]{AgentType.AGRESSIVE}),
+            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2, new AgentType[]{}),
+            new Player(ANSI_BLUE_BACKGROUND, "DREI",3, new AgentType[]{AgentType.DEFENSIVE}),
+            new Player(ANSI_GREEN_BACKGROUND, "VIER",4, new AgentType[]{}),
     };
 
     List<Player> winners = new ArrayList<Player>();
@@ -88,7 +88,7 @@ public class Game extends SimState {
     public void setupPlayingField(int distance, int playerStones) {
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
-            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this);
+            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this, lastField!=null?lastField.formerField:null);
             this.players[playerId].fields.add(field);
 
             if (lastField != null) {
@@ -99,19 +99,21 @@ public class Game extends SimState {
                 this.playingFieldStart = field;
             }
             for (int i = 0; i < distance - 1; i++) {
-                field = new Field(lastField.fieldId + 1, this);
+                field = new Field(lastField.fieldId + 1, this, lastField);
                 this.players[playerId].fields.add(field);
                 ;
                 lastField.setNextField(field);
+                field.setFormerField(lastField);
                 lastField = field;
             }
-            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], playerStones, this);
+            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], playerStones, this, lastField);
 
             lastField.setNextField(field);
             lastField = field;
         }
         assert lastField != null;
         lastField.setNextField(this.playingFieldStart);
+        this.playingFieldStart.setFormerField(lastField);
 
         //System.out.println(this.playingFieldStart);
         Field actualField = this.playingFieldStart.nextField;
@@ -266,7 +268,7 @@ public class Game extends SimState {
     {
         List<Field> enemyPosition = new ArrayList<>();
         //TODO alle gegnerischen Spieler auswählen
-        Player Enemy = new Player("\u001B[30m","Enemy",100);
+        Player Enemy = new Player("\u001B[30m","Enemy",100, null);
         for (Field f : game.setOfAllFields) {
             if (f.occupation == Enemy) {
                 enemyPosition.add(f);
