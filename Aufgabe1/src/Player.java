@@ -8,6 +8,7 @@ import java.util.*;
 public class Player implements Steppable {
     public String color;
     public String name;
+    public int rounds = 0;
     public int order;
     public AgentType[] agentTypes;
     /**
@@ -64,6 +65,7 @@ public class Player implements Steppable {
         }
 
         Game game = (Game) state;
+        this.rounds++;
         boolean itsYourTurn = true;
         int rollsThisTurn = 0;
 
