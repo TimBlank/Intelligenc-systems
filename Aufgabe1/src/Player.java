@@ -145,10 +145,9 @@ public class Player implements Steppable {
 
 
         }
-//        System.out.println(game.findAllStones(this));
 
-        System.out.println(((Game) state).getBoard());
-        System.out.print("");
+        //System.out.println(((Game) state).getBoard());
+        //System.out.print("");
 
     }
 
