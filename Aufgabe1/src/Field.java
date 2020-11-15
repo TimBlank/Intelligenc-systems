@@ -56,7 +56,6 @@ public class Field {
         }
     }
 
-
     public String getColor() {
         if (occupation == null) {
             return Game.ANSI_RESET;
@@ -66,7 +65,8 @@ public class Field {
     }
 
     public String getChar() {
-        return getColor() + "_" + Game.ANSI_RESET;
+        return getColor() + (fieldId < 10 ? "0" + fieldId : fieldId) + Game.ANSI_RESET;
+//        return getColor() + "_" + Game.ANSI_RESET;
     }
 
     public Field getNFurtherField(int n, Player player) {
@@ -90,6 +90,19 @@ public class Field {
             }
         }
         return field;
+    }
+
+    public int getDistanceToGoal(Player player) {
+        if (speciality == Speciality.GOAL_FIELD) {
+            return 0;
+        }
+        int distance = 1;
+        Field field = getNFurtherField(1,player);
+        while (field.speciality != Speciality.GOAL_FIELD) {
+            distance++;
+            field = field.getNFurtherField(1,player);
+        }
+        return distance;
     }
 
     @Override

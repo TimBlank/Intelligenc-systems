@@ -38,11 +38,11 @@ public class Game extends SimState {
     public static final int DISTANCE = 10;
     public static final int STONES = 4;
 
-    Player[] players = {
-            new Player (ANSI_RED_BACKGROUND, "EINS", 1, new AgentType[]{AgentType.AGRESSIVE}),
-            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI",2, new AgentType[]{}),
-            new Player(ANSI_BLUE_BACKGROUND, "DREI",3, new AgentType[]{AgentType.DEFENSIVE}),
-            new Player(ANSI_GREEN_BACKGROUND, "VIER",4, new AgentType[]{}),
+    public static Player[] players = {
+            new Player (ANSI_RED_BACKGROUND, "AGRESSIVE", 1, new AgentType[]{AgentType.AGRESSIVE}),
+            new Player(ANSI_YELLOW_BACKGROUND, "WorstStoneFirst",2, new AgentType[]{AgentType.WORSTSTONE}),
+            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE",3, new AgentType[]{AgentType.DEFENSIVE}),
+            new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst",4, new AgentType[]{AgentType.BESTSTONE}),
     };
 
     List<Player> winners = new ArrayList<Player>();
@@ -61,7 +61,7 @@ public class Game extends SimState {
         }
         schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
-                System.out.println(((Game) state).getBoard());
+//                System.out.println(((Game) state).getBoard());
                 if (winners.size() == 0) {
                     schedule.scheduleOnce(this, players.length);
                 }
@@ -144,13 +144,13 @@ public class Game extends SimState {
      * @return
      */
     public List<Field> findAllStones(Player player) {
-        List<Field> a = new ArrayList<>();
-        for (Field f : setOfAllFields) {
-            if (f.occupation == player) {
-                a.add(f);
+        List<Field> fields = new ArrayList<>();
+        for (Field field : setOfAllFields) {
+            if (field.occupation == player) {
+                fields.add(field);
             }
         }
-        return a;
+        return fields;
     }
 
     /**
@@ -257,7 +257,7 @@ public class Game extends SimState {
     public String getBoard() {
         StringBuilder board = new StringBuilder();
         for (Player player : this.players) {
-            board.append("\n").append(player.getBoard());
+            board.append("\n").append(player.getBoard(this));
         }
         return "Board:" + board;
     }

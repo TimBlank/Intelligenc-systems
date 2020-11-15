@@ -1,5 +1,5 @@
 package src;
 
 public enum AgentType {
-    AGRESSIVE, DEFENSIVE
+    AGRESSIVE, DEFENSIVE, WORSTSTONE, BESTSTONE
 }

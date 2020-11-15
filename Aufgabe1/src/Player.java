@@ -19,7 +19,6 @@ public class Player implements Steppable {
      * These are the fields on this player side or ?
      */
     public List<Field> fields = new ArrayList<>();
-    public int homeStones = 0;
 
     public boolean hasWon = false;
 
@@ -35,21 +34,19 @@ public class Player implements Steppable {
         return "Player{" +
                 "color='" + color + " " + Game.ANSI_RESET + '\'' +
                 ", name='" + name + '\'' +
-                ", homeStones='" + homeStones + '\'' +
                 '}';
     }
 
     public void afterSetup(int playerStones) {
-        this.homeStones = playerStones;
     }
 
-    public String getBoard() {
+    public String getBoard(Game game) {
         StringBuilder board = new StringBuilder();
         for (int i = this.goals.size() - 1; i >= 0; i--) {
             board.append(this.goals.get(i).getChar()).append("|");
 //            board.append(this.goals.get(i).getChar()).append(this.goals.get(i).formerField.fieldId + ":" + this.goals.get(i).fieldId).append("|");
         }
-        board.append(color).append(homeStones).append(Game.ANSI_RESET).append("|");
+        board.append(color).append(Game.STONES-game.findAllStones(this).size()).append(Game.ANSI_RESET).append("|");
         for (Field field : this.fields) {
             board.append(field.getChar()).append("|");
 //            board.append(field.getChar()).append(field.formerField.fieldId + ":" + field.fieldId).append("|");
@@ -150,6 +147,9 @@ public class Player implements Steppable {
         }
 //        System.out.println(game.findAllStones(this));
 
+        System.out.println(((Game) state).getBoard());
+        System.out.print("");
+
     }
 
     public Field chooseMove(int roll, List<Field> possibleMoves, Game game) {
@@ -162,6 +162,8 @@ public class Player implements Steppable {
             moveStrength = switch (agentType) {
                 case AGRESSIVE -> agressiveMove(game, moveStrength, roll);
                 case DEFENSIVE -> defensiveMove(game, moveStrength, roll);
+                case WORSTSTONE -> worstStoneMove(moveStrength);
+                case BESTSTONE -> bestStoneMove(moveStrength);
             };
         }
         return maxMoveStrength(moveStrength);
@@ -190,7 +192,7 @@ public class Player implements Steppable {
 
     private HashMap<Field, Integer> multiplyStrength(HashMap<Field, Integer> moveStrength) {
         for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            entry.setValue(entry.getValue() * 10);
+            entry.setValue(entry.getValue() * 2);
         }
         return moveStrength;
     }
@@ -200,11 +202,14 @@ public class Player implements Steppable {
             int furtherPlayers = 0;
             for (int i = 1;i<=6;i++) {
                 Field furtherField = entry.getKey().getNFurtherField(roll+i, this);
-//                Player occupation = entry.getKey().getNFurtherField(roll+i, this).occupation;
                 if (furtherField != null && furtherField.occupation != null && furtherField.occupation != this) {
                     furtherPlayers++;
                 }
             }
+//            if (furtherPlayers>1) {
+//                System.out.println("furtherPlayers: " + furtherPlayers + " Field: " + entry.getKey() + " distance: " + entry.getKey().getDistanceToGoal(this));
+//                System.out.print("");
+//            }
             entry.setValue(entry.getValue() + furtherPlayers);
         }
         return moveStrength;
@@ -221,6 +226,38 @@ public class Player implements Steppable {
             }
             entry.setValue(entry.getValue() + 6 - formerPlayers);
         }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> worstStoneMove(HashMap<Field, Integer> moveStrength) {
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//        }
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
+            // TODO: Division mit mehr als zwei?
+            entry.setValue(entry.getValue() + distanceToGoal / 2);
+        }
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//            System.out.print("");
+//        }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> bestStoneMove(HashMap<Field, Integer> moveStrength) {
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//        }
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
+            // TODO: Division mit mehr als zwei?
+            entry.setValue(entry.getValue() + (Game.DISTANCE*Game.players.length - distanceToGoal) / 2);
+        }
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//            System.out.print("");
+//        }
         return moveStrength;
     }
 }
