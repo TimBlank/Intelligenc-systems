@@ -97,10 +97,10 @@ public class Field {
             return 0;
         }
         int distance = 1;
-        Field field = getNFurtherField(1,player);
+        Field field = getNFurtherField(1, player);
         while (field.speciality != Speciality.GOAL_FIELD) {
             distance++;
-            field = field.getNFurtherField(1,player);
+            field = field.getNFurtherField(1, player);
         }
         return distance;
     }
