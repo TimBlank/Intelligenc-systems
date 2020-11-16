@@ -3,14 +3,14 @@ package src;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Player implements Steppable {
     public String color;
     public String name;
     public int rounds = 0;
     public int order;
+    public AgentType[] agentTypes;
     /**
      * Players goal Fields.
      */
@@ -19,14 +19,14 @@ public class Player implements Steppable {
      * These are the fields on this player side or ?
      */
     public List<Field> fields = new ArrayList<>();
-    public int homeStones = 0;
 
     public boolean hasWon = false;
 
-    public Player(String color, String name, int order) {
+    public Player(String color, String name, int order, AgentType[] agentTypes) {
         this.color = color;
         this.name = name;
         this.order = order;
+        this.agentTypes = agentTypes;
     }
 
     @Override
@@ -34,22 +34,22 @@ public class Player implements Steppable {
         return "Player{" +
                 "color='" + color + " " + Game.ANSI_RESET + '\'' +
                 ", name='" + name + '\'' +
-                ", homeStones='" + homeStones + '\'' +
                 '}';
     }
 
     public void afterSetup(int playerStones) {
-        this.homeStones = playerStones;
     }
 
-    public String getBoard() {
+    public String getBoard(Game game) {
         StringBuilder board = new StringBuilder();
         for (int i = this.goals.size() - 1; i >= 0; i--) {
             board.append(this.goals.get(i).getChar()).append("|");
+//            board.append(this.goals.get(i).getChar()).append(this.goals.get(i).formerField.fieldId + ":" + this.goals.get(i).fieldId).append("|");
         }
-        board.append(color).append(homeStones).append(Game.ANSI_RESET).append("|");
+        board.append(color).append(Game.STONES-game.findAllStones(this).size()).append(Game.ANSI_RESET).append("|");
         for (Field field : this.fields) {
             board.append(field.getChar()).append("|");
+//            board.append(field.getChar()).append(field.formerField.fieldId + ":" + field.fieldId).append("|");
         }
         return board.toString();
     }
@@ -145,13 +145,118 @@ public class Player implements Steppable {
 
 
         }
-//        System.out.println(game.findAllStones(this));
+
+        //System.out.println(((Game) state).getBoard());
+        //System.out.print("");
 
     }
 
     public Field chooseMove(int roll, List<Field> possibleMoves, Game game) {
+        HashMap<Field, Integer> moveStrength = new HashMap<>();
+        for (Field possibleMove : possibleMoves) {
+            moveStrength.put(possibleMove, 0);
+        }
+        for (AgentType agentType : this.agentTypes) {
+            moveStrength = multiplyStrength(moveStrength);
+            moveStrength = switch (agentType) {
+                case AGRESSIVE -> agressiveMove(game, moveStrength, roll);
+                case DEFENSIVE -> defensiveMove(game, moveStrength, roll);
+                case WORSTSTONE -> worstStoneMove(moveStrength);
+                case BESTSTONE -> bestStoneMove(moveStrength);
+            };
+        }
+        return maxMoveStrength(moveStrength);
+    }
 
+    public Field maxMoveStrength(HashMap<Field, Integer> moveStrength) {
+        if(moveStrength.size()==1) {
+            return moveStrength.keySet().iterator().next();
+        }
+        int maxMoveStrength = 0;
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            maxMoveStrength = maxMoveStrength > entry.getValue() ? maxMoveStrength : entry.getValue();
+        }
+        HashMap<Field, Integer> newMoveStrength = new HashMap<>();
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            if (entry.getValue() == maxMoveStrength){
+                newMoveStrength.put(entry.getKey(), entry.getValue());
+            }
+        }
+        List<Field> fields = new ArrayList();
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            fields.add(entry.getKey());
+        }
+        return fields.get(new Random().nextInt(fields.size()));
+    }
 
-        return possibleMoves.get(0);
+    private HashMap<Field, Integer> multiplyStrength(HashMap<Field, Integer> moveStrength) {
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            entry.setValue(entry.getValue() * 2);
+        }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> agressiveMove(Game game, HashMap<Field, Integer> moveStrength, int roll) {
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int furtherPlayers = 0;
+            for (int i = 1;i<=6;i++) {
+                Field furtherField = entry.getKey().getNFurtherField(roll+i, this);
+                if (furtherField != null && furtherField.occupation != null && furtherField.occupation != this) {
+                    furtherPlayers++;
+                }
+            }
+//            if (furtherPlayers>1) {
+//                System.out.println("furtherPlayers: " + furtherPlayers + " Field: " + entry.getKey() + " distance: " + entry.getKey().getDistanceToGoal(this));
+//                System.out.print("");
+//            }
+            entry.setValue(entry.getValue() + furtherPlayers);
+        }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> defensiveMove(Game game, HashMap<Field, Integer> moveStrength, int roll) {
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int formerPlayers = 0;
+            for (int i = 1;i<=6;i++) {
+                Player occupation = entry.getKey().getNFurtherField(roll-i, this).occupation;
+                if (occupation != null && occupation != this) {
+                    formerPlayers++;
+                }
+            }
+            entry.setValue(entry.getValue() + 6 - formerPlayers);
+        }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> worstStoneMove(HashMap<Field, Integer> moveStrength) {
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//        }
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
+            // TODO: Division mit mehr als zwei?
+            entry.setValue(entry.getValue() + distanceToGoal / 2);
+        }
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//            System.out.print("");
+//        }
+        return moveStrength;
+    }
+
+    private HashMap<Field, Integer> bestStoneMove(HashMap<Field, Integer> moveStrength) {
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//        }
+        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
+            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
+            // TODO: Division mit mehr als zwei?
+            entry.setValue(entry.getValue() + (Game.DISTANCE*Game.players.length - distanceToGoal) / 2);
+        }
+//        if (moveStrength.size()>1){
+//            System.out.println(moveStrength);
+//            System.out.print("");
+//        }
+        return moveStrength;
     }
 }

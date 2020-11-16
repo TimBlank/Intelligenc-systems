@@ -1,10 +1,7 @@
 package src;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import sim.engine.SimState;
 import sim.engine.Steppable;
@@ -38,11 +35,11 @@ public class Game extends SimState {
     public static final int DISTANCE = 10;
     public static final int STONES = 4;
 
-    Player[] players = {
-            new Player(ANSI_RED_BACKGROUND, "EINS", 1),
-            new Player(ANSI_YELLOW_BACKGROUND, "ZWEI", 2),
-            new Player(ANSI_BLUE_BACKGROUND, "DREI", 3),
-            new Player(ANSI_GREEN_BACKGROUND, "VIER", 4),
+    public static Player[] players = {
+            new Player(ANSI_RED_BACKGROUND, "AGRESSIVE", 1, new AgentType[]{AgentType.AGRESSIVE}),
+            new Player(ANSI_YELLOW_BACKGROUND, "WorstStoneFirst", 2, new AgentType[]{AgentType.WORSTSTONE}),
+            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.DEFENSIVE}),
+            new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4, new AgentType[]{AgentType.BESTSTONE}),
     };
 
     List<Player> winners = new ArrayList<Player>();
@@ -61,7 +58,7 @@ public class Game extends SimState {
         }
         schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
-                System.out.println(((Game) state).getBoard());
+//                System.out.println(((Game) state).getBoard());
                 if (winners.size() == 0) {
                     schedule.scheduleOnce(this, players.length);
                 }
@@ -70,24 +67,52 @@ public class Game extends SimState {
     }
 
     public static void main(String[] args) {
-        Game game = new Game(12);
 
-        doLoop(Game.class, args);
+        /**
+         * How many runs you want of this configuration
+         */
+        int amountOfRuns = 2;
+        Statistics statistics = new Statistics();
+
+        for(int i= 0; i< amountOfRuns; i++) {
+            Game game = new Game(System.currentTimeMillis());
+            game.start();
+            while(true) {
+                //System.out.println("stuck");
+
+                if (!game.schedule.step(game) || game.schedule.getSteps() > 250_000) break;
+            }
+            game.finish(statistics);
+
+        }
+        System.out.println(statistics.rankings.size() + " games were played");
+        int amountOfFinishers = 0;
+        for(HashMap<Integer, Player> a : statistics.rankings) {
+            amountOfFinishers+= a.size();
+        }
+        System.out.println(amountOfFinishers + " total Players finished!");
 
         System.exit(0);
+
+
     }
 
-    public void finish() {
+    public void finish(Statistics stats) {
         System.out.println("\nRanking!");
+        HashMap<Integer, Player> winners = new HashMap();
         for (int i = 0; i < this.winners.size(); i++) {
             System.out.println(i + 1 + ". " + this.winners.get(i).name + "(" + this.winners.get(i).rounds + ")!");
+            winners.put(this.winners.get(i).rounds, this.winners.get(i));
         }
+        stats.rankings.add(winners);
+        //Actually finish
+        this.finish();
     }
 
     public void setupPlayingField(int distance, int playerStones) {
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
-            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this);
+            Field field = new Field(lastField == null ? 1 : lastField.fieldId + playerStones, Speciality.HOUSE_EXIT, this.players[playerId], playerStones, this, lastField != null ? lastField.formerField : null);
             this.players[playerId].fields.add(field);
 
             if (lastField != null) {
@@ -98,19 +123,21 @@ public class Game extends SimState {
                 this.playingFieldStart = field;
             }
             for (int i = 0; i < distance - 1; i++) {
-                field = new Field(lastField.fieldId + 1, this);
+                field = new Field(lastField.fieldId + 1, this, lastField);
                 this.players[playerId].fields.add(field);
                 ;
                 lastField.setNextField(field);
+                field.setFormerField(lastField);
                 lastField = field;
             }
-            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], playerStones, this);
+            field = new Field(lastField.fieldId + 1, Speciality.GOAL_ENTRY, this.players[(this.players.length + playerId + 1) % this.players.length], playerStones, this, lastField);
 
             lastField.setNextField(field);
             lastField = field;
         }
         assert lastField != null;
         lastField.setNextField(this.playingFieldStart);
+        this.playingFieldStart.setFormerField(lastField);
 
         //System.out.println(this.playingFieldStart);
         Field actualField = this.playingFieldStart.nextField;
@@ -131,7 +158,7 @@ public class Game extends SimState {
             player.afterSetup(playerStones);
         }
         for (Field f : setOfAllFields) {
-            System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
+           // System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
         }
     }
 
@@ -142,13 +169,13 @@ public class Game extends SimState {
      * @return
      */
     public List<Field> findAllStones(Player player) {
-        List<Field> a = new ArrayList<>();
-        for (Field f : setOfAllFields) {
-            if (f.occupation == player) {
-                a.add(f);
+        List<Field> fields = new ArrayList<>();
+        for (Field field : setOfAllFields) {
+            if (field.occupation == player) {
+                fields.add(field);
             }
         }
-        return a;
+        return fields;
     }
 
     /**
@@ -255,10 +282,36 @@ public class Game extends SimState {
     public String getBoard() {
         StringBuilder board = new StringBuilder();
         for (Player player : this.players) {
-            board.append("\n").append(player.getBoard());
+            board.append("\n").append(player.getBoard(this));
         }
         return "Board:" + board;
     }
 
+
+    //Implements Distance for each Player Stone to all other Stones
+    public List<Field> enemyDistance(List<Field> possibleMoves, Game game) {
+        List<Field> enemyPosition = new ArrayList<>();
+        //TODO alle gegnerischen Spieler auswählen
+        Player Enemy = new Player("\u001B[30m", "Enemy", 100, null);
+        for (Field f : game.setOfAllFields) {
+            if (f.occupation == Enemy) {
+                enemyPosition.add(f);
+            }
+        }
+
+        // All Stones which could theoretically move
+        int movableStones = STONES;
+
+
+        for (int i = 0; i < movableStones; i--) {
+            //game.
+            //TODO alle Steine mit der Distance zum nächsten gegner abgleichen
+
+            //TODO nur wert mit geringster Disantz zum gegner speichern
+
+        }
+        //possibleMoves has only the most aggressiv move
+        return possibleMoves;
+    }
 
 }
