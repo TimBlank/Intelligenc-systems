@@ -248,7 +248,7 @@ public class Player implements Steppable {
         for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
             int distanceToGoal = entry.getKey().getDistanceToGoal(this);
             // TODO: Division mit mehr als zwei?
-            entry.setValue(entry.getValue() + (Game.DISTANCE * game.getPlayers().length - distanceToGoal) / 2);
+            entry.setValue(entry.getValue() + (Game.DISTANCE * game.players.length - distanceToGoal) / 2);
         }
 //        if (moveStrength.size()>1){
 //            System.out.println(moveStrength);

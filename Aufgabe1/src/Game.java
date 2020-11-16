@@ -42,10 +42,6 @@ public class Game extends SimState {
             new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4, new AgentType[]{AgentType.BESTSTONE}),
     };
 
-    public Player[] getPlayers() {
-        return players;
-    }
-
     List<Player> winners = new ArrayList<>();
 
     public Game(long seed) {
