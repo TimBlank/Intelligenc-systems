@@ -35,18 +35,17 @@ public class Game extends SimState {
     public static final int DISTANCE = 10;
     public static final int STONES = 4;
 
-    public static Player[] players = {
+    public Player[] players = {
             new Player(ANSI_RED_BACKGROUND, "AGRESSIVE", 1, new AgentType[]{AgentType.AGRESSIVE}),
             new Player(ANSI_YELLOW_BACKGROUND, "WorstStoneFirst", 2, new AgentType[]{AgentType.WORSTSTONE}),
             new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.DEFENSIVE}),
             new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4, new AgentType[]{AgentType.BESTSTONE}),
     };
 
-    List<Player> winners = new ArrayList<Player>();
+    List<Player> winners = new ArrayList<>();
 
     public Game(long seed) {
         super(seed);
-
     }
 
     public void start() {
@@ -71,13 +70,13 @@ public class Game extends SimState {
         /**
          * How many runs you want of this configuration
          */
-        int amountOfRuns = 2;
+        int amountOfRuns = 20;
         Statistics statistics = new Statistics();
 
-        for(int i= 0; i< amountOfRuns; i++) {
+        for (int i = 0; i < amountOfRuns; i++) {
             Game game = new Game(System.currentTimeMillis());
             game.start();
-            while(true) {
+            while (true) {
                 //System.out.println("stuck");
 
                 if (!game.schedule.step(game) || game.schedule.getSteps() > 250_000) break;
@@ -87,8 +86,8 @@ public class Game extends SimState {
         }
         System.out.println(statistics.rankings.size() + " games were played");
         int amountOfFinishers = 0;
-        for(HashMap<Integer, Player> a : statistics.rankings) {
-            amountOfFinishers+= a.size();
+        for (HashMap<Integer, Player> a : statistics.rankings) {
+            amountOfFinishers += a.size();
         }
         System.out.println(amountOfFinishers + " total Players finished!");
 
@@ -154,11 +153,8 @@ public class Game extends SimState {
         }
         //System.out.println(this.getBoard());
         //this.play();
-        for (Player player : players) {
-            player.afterSetup(playerStones);
-        }
         for (Field f : setOfAllFields) {
-           // System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
+            // System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
         }
     }
 

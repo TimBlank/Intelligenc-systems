@@ -7,6 +7,4 @@ public class Statistics {
 
     ArrayList<HashMap<Integer, Player>> rankings = new ArrayList<>();
 
-
-
 }
