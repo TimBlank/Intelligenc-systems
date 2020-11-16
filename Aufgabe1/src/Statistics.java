@@ -29,8 +29,10 @@ public class Statistics {
         StringBuilder string = new StringBuilder("Durchschnitt der " + rankings.size() + " Runden:\n");
         Map<String, Integer> order = sortByValue(ranking, true);
         int place = 1;
+        int last = 0;
         for (Map.Entry<String, Integer> entry : order.entrySet()) {
-            string.append(place++ + ". " + entry.getKey() + ": " + entry.getValue() / rankings.size() + "\n");
+            string.append(place++ + ". " + entry.getKey() + ": " + entry.getValue() / rankings.size() + " (" + entry.getValue() + ") " + (last>0?"+" + (entry.getValue()-last):"") + "\n");
+            last = entry.getValue();
         }
 
         return string.toString();

@@ -73,7 +73,8 @@ public class Game extends SimState {
         int amountOfRuns = 10000;
         Statistics statistics = new Statistics();
 
-        for (int i = 0; i < amountOfRuns; i++) {
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+//        for (int i = 0; i < amountOfRuns; i++) {
             if (i>0 && i % 1000 == 0) {
                 System.out.println(statistics);
             }
