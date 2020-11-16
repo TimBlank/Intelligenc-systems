@@ -71,7 +71,7 @@ public class Player implements Steppable {
             possibleMoves = game.removeDoneStones(this, possibleMoves);
 
             int roll = state.random.nextInt(6) + 1;
-            System.out.print(color + " " + Game.ANSI_RESET + roll);
+//            System.out.print(color + " " + Game.ANSI_RESET + roll);
             List<Field> occupiedFields = game.findAllStones(this);
             rollsThisTurn++;
 
@@ -255,5 +255,14 @@ public class Player implements Steppable {
 //            System.out.print("");
 //        }
         return moveStrength;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return color.equals(player.color) &&
+                name.equals(player.name);
     }
 }

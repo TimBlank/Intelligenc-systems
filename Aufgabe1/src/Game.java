@@ -70,40 +70,35 @@ public class Game extends SimState {
         /**
          * How many runs you want of this configuration
          */
-        int amountOfRuns = 20;
+        int amountOfRuns = 10000;
         Statistics statistics = new Statistics();
 
         for (int i = 0; i < amountOfRuns; i++) {
+            if (i>0 && i % 1000 == 0) {
+                System.out.println(statistics);
+            }
             Game game = new Game(System.currentTimeMillis());
             game.start();
             while (true) {
-                //System.out.println("stuck");
-
                 if (!game.schedule.step(game) || game.schedule.getSteps() > 250_000) break;
             }
             game.finish(statistics);
-
         }
         System.out.println(statistics.rankings.size() + " games were played");
         int amountOfFinishers = 0;
-        for (HashMap<Integer, Player> a : statistics.rankings) {
-            amountOfFinishers += a.size();
+        for (HashMap<Player, Integer> game : statistics.rankings) {
+            amountOfFinishers += game.size();
         }
         System.out.println(amountOfFinishers + " total Players finished!");
+        // Print complete statistic
+        System.out.println(statistics);
 
         System.exit(0);
-
-
     }
 
-    public void finish(Statistics stats) {
-        System.out.println("\nRanking!");
-        HashMap<Integer, Player> winners = new HashMap();
-        for (int i = 0; i < this.winners.size(); i++) {
-            System.out.println(i + 1 + ". " + this.winners.get(i).name + "(" + this.winners.get(i).rounds + ")!");
-            winners.put(this.winners.get(i).rounds, this.winners.get(i));
-        }
-        stats.rankings.add(winners);
+    public void finish(Statistics statistics) {
+        // Add to statistics
+        statistics.add(this);
         //Actually finish
         this.finish();
     }
