@@ -1,5 +1,6 @@
 package src;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,10 @@ public class Statistics {
         int place = 1;
         int last = 0;
         for (Map.Entry<String, Integer> entry : order.entrySet()) {
-            string.append(place++ + ". " + entry.getKey() + ": " + entry.getValue() / rankings.size() + " (" + entry.getValue() + ") " + (last>0?"+" + (entry.getValue()-last):"") + "\n");
+            string.append(place++ + ". " + entry.getKey() + ": " + entry.getValue() / rankings.size()
+                    + " (" + NumberFormat.getIntegerInstance().format(entry.getValue()) + ") "
+                    + (last > 0 ? "+" + NumberFormat.getIntegerInstance().format(entry.getValue() - last) : "")
+                    + "\n");
             last = entry.getValue();
         }
 
