@@ -27,7 +27,7 @@ public class Statistics {
                 ranking.put(entry.getKey().name, count + entry.getKey().rounds);
             }
         }
-        StringBuilder string = new StringBuilder("Durchschnitt der " + rankings.size() + " Runden:\n");
+        StringBuilder string = new StringBuilder("Durchschnitt der " + NumberFormat.getIntegerInstance().format(rankings.size()) + " Runden:\n");
         Map<String, Integer> order = sortByValue(ranking, true);
         int place = 1;
         int last = 0;
