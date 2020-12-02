@@ -7,9 +7,18 @@ import java.util.ArrayList;
  * Tent T
  * Tree (N, S, E, W) when connected to it's Tent, t when unsolved. According to rules, each tree has one attached.
  * Grass G , something that is never a tent/tree
- * Unspecified " " or pretty much whatever
+ * Unspecified " "
  */
 public class State {
+
+    public static final String TREE = "t";
+    public static final String GRASS = "G";
+    public static final String UNKNOWN = " ";
+    public static final String TENT = "T";
+    public static final String NORTH_TREE = "N";
+    public static final String SOUTH_TREE ="S";
+    public static final String WEST_TREE = "W";
+    public static final String EAST_TREE = "E";
 
     ArrayList<ArrayList<String>> field;
 
@@ -50,7 +59,7 @@ public class State {
     }
 
     /**
-     * If a square has no adjacent tree, it cannot contain a Tent, so this Method is useful
+     * If a square has an adjacent tree.
      * @param x
      * @param y
      * @return
@@ -59,17 +68,19 @@ public class State {
         if(x > 0 && isConfirmed(x-1,y)) {
             return true;
         }
-        if(isConfirmed(x+1, y)) {
+        if(x+1 < field.size() && isConfirmed(x+1, y)) {
             return true;
         }
         if(y > 0 && isConfirmed(x, y-1)) {
             return true;
         }
-        if(isConfirmed(x, y+1)) {
+        if(y+1 < field.get(x).size() && isConfirmed(x, y+1)) {
             return true;
         }
         return false;
     }
+
+
 
     /**
      * If a given field is already solved. Performs boundary check
@@ -82,7 +93,8 @@ public class State {
             return false;
         }
         String c = field.get(x).get(y);
-        return c.equals("N") || c.equals("S") || c.equals("E") || c.equals("W") || c.equals("t") || c.equals("T");
+        return c.equals(NORTH_TREE) || c.equals(SOUTH_TREE) || c.equals(EAST_TREE) ||
+                c.equals(WEST_TREE) || c.equals(TREE) || c.equals(TENT);
     }
 
     /**
@@ -96,7 +108,7 @@ public class State {
             return false;
         }
         String c = field.get(x).get(y);
-        return c.equals("N") || c.equals("S") || c.equals("E") || c.equals("W") || c.equals("t") ;
+        return c.equals(NORTH_TREE) || c.equals(SOUTH_TREE) || c.equals(EAST_TREE) || c.equals(WEST_TREE) || c.equals(TREE) ;
     }
 
 
@@ -105,19 +117,31 @@ public class State {
     }
 
     public void setTent(int x, int y, int treeX, int treeY) {
-        field.get(x).set(y, "T");
+        field.get(x).set(y, TENT);
+
         //Tree is left of Tent
         if(x > treeX) {
-            this.set(treeX, treeY, "E");
+            this.set(treeX, treeY, EAST_TREE);
         }
         if(x < treeX) {
-            this.set(treeX, treeY, "W");
+            this.set(treeX, treeY, WEST_TREE);
         }
         if(y > treeY) {
-            this.set(treeX, treeY, "N");
+            this.set(treeX, treeY, SOUTH_TREE);
         }
         if(y < treeY) {
-            this.set(treeX, treeY, "S");
+            this.set(treeX, treeY, NORTH_TREE);
+        }
+        //Tents can't have any other Tent around it
+        for(int i= x-1; i<= x+1; i++) {
+            for(int j= y-1; j <= y+1; j++) {
+
+                if(i > -1 && i < field.size() && j > -1 && j < field.get(i).size()) {
+                    if (field.get(i).get(j).equals(UNKNOWN)) {
+                        field.get(i).set(j, GRASS);
+                    }
+                }
+            }
         }
 
     }

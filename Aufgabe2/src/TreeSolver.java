@@ -13,6 +13,8 @@ public class TreeSolver {
         state.showField();
         tS.markImpossibleFieldsAsGrass(state);
         state.showField();
+        tS.level1checks(state);
+        state.showField();
     }
 
     /**
@@ -121,7 +123,62 @@ public class TreeSolver {
 
     }
 
+    /**
+     * Performs consistency check. Puts Tents where there need to be Tents because a Tree has only one space left
+     * for one.
+     * @param state
+     */
+    public void level1checks(State state) {
+        for(int x=0; x< state.field.size(); x++) {
+            for(int y= 0; y< state.field.get(x).size(); y++) {
+                if(state.field.get(x).get(y).equals(State.TREE)) {
+                    //Found a unsolved Tree
+                    int amountOfPlacesForTent = 0;
+                    if(x > 0 && state.field.get(x-1).get(y).equals(State.UNKNOWN)) {
+                        amountOfPlacesForTent++;
+                    }
+                    if(y > 0 && state.field.get(x).get(y-1).equals(State.UNKNOWN)) {
+                        amountOfPlacesForTent++;
+                    }
+                    if(x+1 < state.field.size() && state.field.get(x+1).get(y).equals(State.UNKNOWN)) {
+                        amountOfPlacesForTent++;
+                    }
+                    if(y+1 < state.field.get(x).size() && state.field.get(x).get(y+1).equals(State.UNKNOWN)) {
+                        amountOfPlacesForTent++;
+                    }
+                    //If it only has one place near it, put Tent there
+                    if(amountOfPlacesForTent == 1) {
+                        if(x > 0 && state.field.get(x-1).get(y).equals(State.UNKNOWN)) {
+                            state.setTent(x-1, y, x,y);
+                            continue;
+                        }
+                        if(y > 0 && state.field.get(x).get(y-1).equals(State.UNKNOWN)) {
+                            state.setTent(x, y-1, x,y);
+                            continue;
+                        }
+                        if(x+1 < state.field.size() && state.field.get(x+1).get(y).equals(State.UNKNOWN)) {
+                            state.setTent(x+1, y, x,y);
+                            continue;
+                        }
+                        if(y+1 < state.field.get(x).size() && state.field.get(x).get(y+1).equals(State.UNKNOWN)) {
+                            state.setTent(x, y+1, x,y);
+                            continue;
+                        }
+                    }
 
+                }
+            }
+        }
+    }
+
+    /**
+     * Performs not-yet-intelligent checks, such as checking how many squares CAN even be a tent in a row/column
+     * and comparing it to the needed amount. If it's the same, put a tent in every place in that row/column
+     * @param state
+     */
+    public void level2checks(State state) {
+
+    }
 
 
 }
