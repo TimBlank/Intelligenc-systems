@@ -279,31 +279,4 @@ public class Game extends SimState {
         return "Board:" + board;
     }
 
-
-    //Implements Distance for each Player Stone to all other Stones
-    public List<Field> enemyDistance(List<Field> possibleMoves, Game game) {
-        List<Field> enemyPosition = new ArrayList<>();
-        //TODO alle gegnerischen Spieler auswählen
-        Player Enemy = new Player("\u001B[30m", "Enemy", 100, null);
-        for (Field f : game.setOfAllFields) {
-            if (f.occupation == Enemy) {
-                enemyPosition.add(f);
-            }
-        }
-
-        // All Stones which could theoretically move
-        int movableStones = STONES;
-
-
-        for (int i = 0; i < movableStones; i--) {
-            //game.
-            //TODO alle Steine mit der Distance zum nächsten gegner abgleichen
-
-            //TODO nur wert mit geringster Disantz zum gegner speichern
-
-        }
-        //possibleMoves has only the most aggressiv move
-        return possibleMoves;
-    }
-
 }
