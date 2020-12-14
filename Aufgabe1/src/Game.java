@@ -38,7 +38,8 @@ public class Game extends SimState {
     public Player[] players = {
             new Player(ANSI_RED_BACKGROUND, "AGRESSIVE", 1, new AgentType[]{AgentType.AGRESSIVE}),
             new Player(ANSI_YELLOW_BACKGROUND, "WorstStoneFirst", 2, new AgentType[]{AgentType.WORSTSTONE}),
-            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.DEFENSIVE}),
+            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.LOOSE}),
+//            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.DEFENSIVE}),
             new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4, new AgentType[]{AgentType.BESTSTONE}),
     };
 
@@ -75,7 +76,7 @@ public class Game extends SimState {
 
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
 //        for (int i = 0; i < amountOfRuns; i++) {
-            if (i>0 && i % 1000 == 0) {
+            if (i>0 && i % 100 == 0) {
                 System.out.println(statistics);
             }
             Game game = new Game(System.currentTimeMillis());

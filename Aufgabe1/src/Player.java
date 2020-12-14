@@ -115,7 +115,15 @@ public class Player implements Steppable {
                 }
             }
             if (killMoves.size() > 0) {
-                possibleMoves = killMoves;
+                if (Arrays.asList(this.agentTypes).contains(AgentType.LOOSE)) {
+                    if (possibleMoves.size() > killMoves.size()) {
+                        for (Field killMove: killMoves) {
+                            possibleMoves.remove(killMove);
+                        }
+                    }
+                } else {
+                    possibleMoves = killMoves;
+                }
             }
 
             for (int i = 0; i < possibleMoves.size(); i++) {
@@ -160,6 +168,7 @@ public class Player implements Steppable {
                 case DEFENSIVE -> defensiveMove(game, moveStrength, roll);
                 case WORSTSTONE -> worstStoneMove(moveStrength);
                 case BESTSTONE -> bestStoneMove(game, moveStrength);
+                case LOOSE -> defensiveMove(game, moveStrength, roll);
             };
         }
         return maxMoveStrength(moveStrength);

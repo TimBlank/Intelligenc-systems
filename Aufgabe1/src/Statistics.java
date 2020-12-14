@@ -26,48 +26,49 @@ public class Statistics {
             }
         }
         for (int i = 0; i < game.winners.size(); i++) {
-       //     System.out.println(i + 2 + ". " + game.winners.get(i).name + "(" + game.winners.get(i).rounds + ")!");
+            //     System.out.println(i + 2 + ". " + game.winners.get(i).name + "(" + game.winners.get(i).rounds + ")!");
             //Speichert Rang & anzahl züge
 
-            int n= i % 4;
-                    switch (game.winners.get(i).name) {//Beliebige anzahl an playern
-                        case "AGRESSIVE":
-                            Agressiveplacing[n] = Agressiveplacing[n] +1;
-                            break;
-                        case "WorstStoneFirst":
-                            Defensiveplacing[n] = Defensiveplacing[n] +1;
-                            break;
-                        case "DEFENSIVE":
-                            WorstStoneFirstplacing[n] = WorstStoneFirstplacing[n] +1;
-                            break;
-                        case "BestStoneFirst":
-                            BeststoeFirstplacing[n] = BeststoeFirstplacing[n] +1;
-                            break;
-                        default:
-                            System.out.println("Problem with: " + i + " " + game.winners.get(i).name);
-                    }
+            int n = i % 4;
+            switch (game.winners.get(i).name) {//Beliebige anzahl an playern
+                case "AGRESSIVE":
+                    Agressiveplacing[n] = Agressiveplacing[n] + 1;
+                    break;
+                case "WorstStoneFirst":
+                    WorstStoneFirstplacing[n] = WorstStoneFirstplacing[n] + 1;
+                    break;
+                case "DEFENSIVE":
+                    Defensiveplacing[n] = Defensiveplacing[n] + 1;
+                    break;
+                case "BestStoneFirst":
+                    BeststoeFirstplacing[n] = BeststoeFirstplacing[n] + 1;
+                    break;
+                default:
+                    System.out.println("Problem with: " + i + " " + game.winners.get(i).name);
+            }
 
             winners.put(game.winners.get(i), game.winners.get(i).rounds);
         }
         this.rankings.add(winners);
 
-        /**for(int i=0;i<4;i++){
+        /*
+        for(int i=0;i<4;i++){
             System.out.println("Platz "+(i+1)+ " | Aggresive:" +Agressiveplacing[i] + " | Defensive:"+Defensiveplacing[i]+ " | Worst:"+ WorstStoneFirstplacing[i]+ " | Best:" +BeststoeFirstplacing[i]);
         }
         System.out.println("Runden ende");
-        **/
+        */
     }
 
     @Override
     public String toString() {
         HashMap<String, Integer> ranking = new HashMap<>();
         for (HashMap<Player, Integer> game : rankings) {
-                for (Map.Entry<Player, Integer> entry : game.entrySet()) {
-                    // Zählt alle Züge aus allen Runden zusammen
-                    int count = ranking.getOrDefault(entry.getKey().name, 0);
-                    ranking.put(entry.getKey().name, count + entry.getKey().rounds);
-                }
+            for (Map.Entry<Player, Integer> entry : game.entrySet()) {
+                // Zählt alle Züge aus allen Runden zusammen
+                int count = ranking.getOrDefault(entry.getKey().name, 0);
+                ranking.put(entry.getKey().name, count + entry.getKey().rounds);
             }
+        }
 
         StringBuilder string = new StringBuilder("Durchschnitt der " + NumberFormat.getIntegerInstance().format(rankings.size()) + " Runden:\n");
         Map<String, Integer> order = sortByValue(ranking, true);
@@ -80,8 +81,8 @@ public class Statistics {
                     + "\n");
             last = entry.getValue();
         }
-        for(int i=0;i<4;i++){
-            System.out.println("Platz "+(i+1)+ " | Aggresive:" +Agressiveplacing[i] + " | Defensive:"+Defensiveplacing[i]+ " | Worst:"+ WorstStoneFirstplacing[i]+ " | Best:" +BeststoeFirstplacing[i]);
+        for (int i = 0; i < 4; i++) {
+            System.out.println("Platz " + (i + 1) + " | Aggresive:" + Agressiveplacing[i] + " | Defensive:" + Defensiveplacing[i] + " | Worst:" + WorstStoneFirstplacing[i] + " | Best:" + BeststoeFirstplacing[i]);
         }
         return string.toString();
     }
