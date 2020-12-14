@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class TreeSolver {
 
 
-    public static String FILE  = "Aufgabe2/tents_trees_0.csv";
+    public static String FILE  = "Aufgabe2/tents_trees_4.csv";
 
     public static void main(String[] args) {
         TreeSolver tS = new TreeSolver();
@@ -13,7 +13,13 @@ public class TreeSolver {
         state.showField();
         tS.markImpossibleFieldsAsGrass(state);
         state.showField();
-        tS.level1checks(state);
+
+        do {
+            state.hasChanged = false;
+            tS.level1checks(state);
+        } while(state.hasChanged);
+        System.out.println(tS.countBoundSpacesColumn(state, 23));
+
         state.showField();
     }
 
@@ -178,6 +184,76 @@ public class TreeSolver {
      */
     public void level2checks(State state) {
 
+    }
+
+    //TODO: Rework this shit to actually count "placed" trees next time
+
+    /**
+     * Counts how many Trees at maximum can be placed in this Column.
+     * @param state
+     * @return
+     */
+    public int countBoundSpacesColumn(State state, int col) {
+        int counter = 0;
+        for(int i=0; i< state.field.get(col).size(); i++) {
+            String content = state.field.get(col).get(i);
+            if(content.equals(State.GRASS)) {
+                continue;
+            }
+            if(content.equals(State.UNKNOWN)) {
+                //Find free space and add one if has unused Tree in surrounding columns
+                //i.e. Can place tent because of Tree UNBOUND
+                if(state.is(col-1, i, State.TREE) || state.is(col+1, i, State.TREE)) {
+                    counter++;
+                }
+            }
+            if(content.equals(State.TREE)) {
+                //Find unused Tree in row and add one if has free space in column
+                //i.e. Can place tent because of BOUND tree
+                if(state.is(col, i-1, State.UNKNOWN) || state.is(col, i+1,State.UNKNOWN)) {
+                    counter++;
+                }
+            }
+            //That counts all possibilities of placing a tree
+
+
+            //Maybe substract the "next" cell if would have placed a tree?
+        }
+        return counter;
+
+    }
+    /**
+     * Counts how many Trees at maximum can be placed in this Row.
+     * @param state
+     * @return
+     */
+    public int countBoundSpacesRow(State state, int row) {
+        int counter = 0;
+        for(int i=0; i< state.field.size(); i++) {
+            String content = state.field.get(i).get(row);
+            if(content.equals(State.GRASS)) {
+                continue;
+            }
+            if(content.equals(State.UNKNOWN)) {
+                //Find free space and add one if has unused Tree in surrounding columns
+                //i.e. Can place tent because of Tree UNBOUND
+                if(state.is(i, row-1, State.TREE) || state.is(i, row+1, State.TREE)) {
+                    counter++;
+                }
+            }
+            if(content.equals(State.TREE)) {
+                //Find unused Tree in row and add one if has free space in column
+                //i.e. Can place tent because of BOUND tree
+                if(state.is(i-1, row, State.UNKNOWN) || state.is(i+1, row,State.UNKNOWN)) {
+                    counter++;
+                }
+            }
+            //That counts all possibilities of placing a tree
+
+
+            //Maybe substract the "next" cell if would have placed a tree?
+        }
+        return counter;
     }
 
 

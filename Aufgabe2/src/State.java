@@ -28,6 +28,8 @@ public class State {
     //required Tents in the row
     int[] rowDemand;
 
+    //If the state got changed due to a thing
+    boolean hasChanged = false;
 
 
 
@@ -111,6 +113,12 @@ public class State {
         return c.equals(NORTH_TREE) || c.equals(SOUTH_TREE) || c.equals(EAST_TREE) || c.equals(WEST_TREE) || c.equals(TREE) ;
     }
 
+    public boolean is(int x, int y, String content) {
+        if(x < 0 || x >= field.size() || y < 0 || y >= field.get(x).size()) {
+            return false;
+        }
+        return content.equals(field.get(x).get(y));
+    }
 
     public void set(int x, int y, String value) {
         field.get(x).set(y, value);
@@ -118,6 +126,7 @@ public class State {
 
     public void setTent(int x, int y, int treeX, int treeY) {
         field.get(x).set(y, TENT);
+        hasChanged= true;
 
         //Tree is left of Tent
         if(x > treeX) {
