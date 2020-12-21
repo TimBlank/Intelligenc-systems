@@ -1,3 +1,7 @@
+import java.util.List;
+
 public interface Algorithm {
-    public String output();
+    public void calculate();
+
+    public List<Resource> getResources();
 }

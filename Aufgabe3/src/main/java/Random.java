@@ -10,9 +10,13 @@ public class Random implements Algorithm {
     }
 
     @Override
-    public String output() {
-        String sting = "";
+    public void calculate() {
+        // TODO
+    }
 
+    @Override
+    public List<Resource> getResources() {
+        // TODO
         return null;
     }
 }
