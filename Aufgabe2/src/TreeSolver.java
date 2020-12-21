@@ -184,7 +184,7 @@ public class TreeSolver {
             System.out.println(y);
             state.showField();
             for(int x = 0; x < state.columnDemand.length; x++){
-                if(state.field.get(x).get(y).equals(state.TREE) && state.treeWithTent(x,y) == false){
+                if(state.field.get(x).get(y).equals(state.TREE)){
                     int[][] array;
                     array = new int[4][2];
                     array[0][0] = x-1; array[0][1] = y;
@@ -198,10 +198,9 @@ public class TreeSolver {
                             if(state.possible(i,j) == true){
                                 state.setTent(i,j,x,y);
                                 level2checks(state);
-                                state.field.get(i).set(j, state.GRASS);
                             }
                         }
-                    } return;
+                    }
                 }
             }
         }
