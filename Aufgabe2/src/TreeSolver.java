@@ -15,6 +15,8 @@ public class TreeSolver {
         state.showField();
         tS.level1checks(state);
         state.showField();
+        tS.level2checks(state);
+        state.showField();
     }
 
     /**
@@ -176,8 +178,33 @@ public class TreeSolver {
      * and comparing it to the needed amount. If it's the same, put a tent in every place in that row/column
      * @param state
      */
+    // recursive method
     public void level2checks(State state) {
-
+        for(int y = 0; y < state.rowDemand.length; y++){
+            System.out.println(y);
+            state.showField();
+            for(int x = 0; x < state.columnDemand.length; x++){
+                if(state.field.get(x).get(y).equals(state.TREE) && state.treeWithTent(x,y) == false){
+                    int[][] array;
+                    array = new int[4][2];
+                    array[0][0] = x-1; array[0][1] = y;
+                    array[1][0] = x+1; array[1][1] = y;
+                    array[2][0] = x; array[2][1] = y-1;
+                    array[3][0] = x; array[3][1] = y+1;
+                    for(int h = 0; h < 4; h++){
+                        int i = array[h][0];
+                        int j = array[h][1];
+                        if(i > -1 && i < state.columnDemand.length && j > -1 && j < state.rowDemand.length){
+                            if(state.possible(i,j) == true){
+                                state.setTent(i,j,x,y);
+                                level2checks(state);
+                                state.field.get(i).set(j, state.GRASS);
+                            }
+                        }
+                    } return;
+                }
+            }
+        }
     }
 
 

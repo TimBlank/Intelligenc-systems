@@ -143,7 +143,77 @@ public class State {
                 }
             }
         }
-
     }
+
+    public int numberTentsInRow(int y){
+        int numberTents = 0;
+        for(int x = 0; x < columnDemand.length; x++){ //is field.size() size of column?
+            if(field.get(x).get(y).equals(TENT)){
+                numberTents++;
+            }
+        }
+        return numberTents;
+    }
+
+    public int numberTentsInColumn(int x){
+        int numberTents = 0;
+        for(int y = 0; y < rowDemand.length; y++){ //is field.size() size of row?
+            if(field.get(x).get(y).equals(TENT)){
+                numberTents++;
+            }
+        }
+        return numberTents;
+    }
+
+    public boolean noAdjacentTent(int x, int y){
+        int count = 0;
+        for(int i = x-1; i <= x+1; i++){
+            for(int j = y-1; j <= y+1; j++){
+                if(i > -1 && i < columnDemand.length && j > -1 && j < rowDemand.length) {
+                    if(field.get(i).get(j) != (TENT)) {
+                        count++;
+                    }
+                } else{count++;}
+            }
+        }
+        if (count == 9){
+            return true;
+        } else{return false;}
+    }
+
+    public boolean possible(int x, int y){
+        if(numberTentsInRow(y) < rowDemand[y] && numberTentsInColumn(x) < columnDemand[x] && noAdjacentTent(x,y) == true){
+            return true;
+        } else{return false;}
+    }
+
+
+
+    public boolean treeWithTent(int x, int y){
+        //Tree is left of Tent
+        if(x-1 > 0){
+            if(field.get(x-1).get(y).equals(WEST_TREE)) {
+                return true;
+            }
+        }
+        if(x+1 < columnDemand.length){
+            if(field.get(x+1).get(y).equals(EAST_TREE)) {
+                return true;
+            }
+        }
+        if(y-1 > 0){
+            if(field.get(x).get(y-1).equals(NORTH_TREE)) {
+                return true;
+            }
+        }
+        if(y+1 < rowDemand.length){
+            if(field.get(x).get(y+1).equals(SOUTH_TREE)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }
