@@ -10,10 +10,15 @@ public class Scheduling {
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         // TODO: Other files
-        InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("abz6_10_jobs_10_resources.json");
+        InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("la01_10_jobs_5_resources.json");
         String json = readFromInputStream(is);
 //        System.out.println(json);
         Data data = gson.fromJson(json, Data.class);
+        for (Job job : data.jobs) {
+            for (Operation operation : job.operations) {
+                operation.job = job.id;
+            }
+        }
         System.out.println(data.toString());
     }
 
