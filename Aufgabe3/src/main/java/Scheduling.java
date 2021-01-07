@@ -20,6 +20,9 @@ public class Scheduling {
             }
         }
         System.out.println(data.toString());
+        Greedy greedy = new Greedy(data);
+        greedy.calculate();
+//        System.out.println(greedy.getResources());
     }
 
     private static String readFromInputStream(InputStream inputStream)
