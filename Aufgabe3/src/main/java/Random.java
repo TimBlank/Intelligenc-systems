@@ -13,10 +13,4 @@ public class Random implements Algorithm {
     public void calculate() {
         // TODO
     }
-
-    @Override
-    public List<Resource> getResources() {
-        // TODO
-        return null;
-    }
 }

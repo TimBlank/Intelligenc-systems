@@ -13,62 +13,41 @@ public class Greedy implements Algorithm {
     @Override
     public void calculate() {
         while (true) {
-            // 1. getLongestOperationDoAble
+            // getOperations
             List<Operation> operations = new ArrayList<>();
             for (Job job : jobs) {
-                operations.add(job.getNextOperation());
+                Operation nextOp = job.getNextOperation();
+                if (nextOp != null) {
+                    operations.add(job.getNextOperation());
+                }
             }
-            operations.sort((o1, o2) -> Integer.compare(o2.duration, o1.duration));
+            // getNextOperation (max duration)
             Operation nextOperation = operations.get(0);
+            for (Operation operation : operations) {
+                if (operation.duration > nextOperation.duration) {
+                    nextOperation = operation;
+                }
+            }
+            // getResource from ResourceId
             Resource nextResource = resources.get(0);
             for (Resource resource : resources) {
                 if (resource.id == nextOperation.resource) {
-//                    System.out.println("AOUFHAUPIOSh");
                     nextResource = resource;
                     break;
                 }
             }
-// 1. Ende Job
+            // get actual LastOperationEnd of the job
             int jobEnd = 0;
             for (Job job : jobs) {
                 if (job.id == nextOperation.job) {
                     jobEnd = job.lastOperationEnd();
-//                    System.out.println("job: " + job);
-//                    System.out.println("jobEnd: " + jobEnd);
                     break;
                 }
             }
-// 2. Wo passt das in Resource
-            nextResource.addOperation(nextOperation, nextResource.getOptimalTime(jobEnd, nextOperation.duration));
-            System.out.println("thisResource: " + nextResource);
-//            TODO getActualEndTimeOfJob danach erst starten
-//            TODO
-//            ----
-//            System.out.println(operations);
-//            Resource nextResource = resources.get(0);
-//            System.out.println(nextResource);
-//            for (Resource resource : resources) {
-//            System.out.println(resource + " | " + nextResource);
-//                if (resource.getEndTime() < nextResource.getEndTime()) {
-//                    nextResource = resource;
-//                }
-//            }
-//            Job nextJob = jobs.get(0);
-//            for (Job job : jobs) {
-//                if (job.id == nextOperation.job) {
-//                    nextJob = job;
-//                }
-//            }
-//        System.out.println("nextResource.getEndTime(): " + nextResource.getEndTime());
-//        System.out.println("nextJob.lastOperationEnd(): " + nextJob.lastOperationEnd());
-//            int time = Math.max(nextJob.lastOperationEnd(), nextResource.getEndTime());
-//            nextResource.addOperation(nextOperation, time);
-//            System.out.println("nextResource.o: " + nextResource.operations);
-            int jobnumber = resources.stream().mapToInt(resource -> resource.operations.size()).sum();
-//            System.out.println(jobnumber);
-            if (nextResource.id == 0) {
-                nextResource.id = 0;
-            }
+            // calc starttime out of Resource (min Starttime combined with duration)
+            int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
+            nextResource.addOperation(nextOperation, starttime);
+            // Check ready
             boolean ready = true;
             for (Job job : jobs) {
                 if (!job.ready()) {
@@ -78,25 +57,5 @@ public class Greedy implements Algorithm {
             }
             if (ready) return;
         }
-        // TODO - liste mit Operationen der Jobs (Name/id;Maschine;länge) "Unsortiert"
-
-        //TODO - Operation in richtige Re
-
-
-        // TODO - längste Zeit in der Liste finden und auswählen
-
-        // TODO - liste aktualisieren (nächste Operation über job hinzufügen)
-        //get next Operation
-
-
-        // TODO - Wiederholen bis "Unsortiert" keinen eintrag mehr besitzt
-        // TODO - Liste Sortiert ausgeben (Nach Position und Maschine Sortiert)
     }
-
-    @Override
-    public List<Resource> getResources() {
-        return resources;
-    }
-
-
 }

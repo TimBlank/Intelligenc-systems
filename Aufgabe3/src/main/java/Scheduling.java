@@ -10,6 +10,7 @@ public class Scheduling {
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         // TODO: Other files
+//        InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("swv20_50_jobs_10_resources.json");
         InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("la01_10_jobs_5_resources.json");
         String json = readFromInputStream(is);
 //        System.out.println(json);
@@ -22,6 +23,9 @@ public class Scheduling {
         System.out.println(data.toString());
         Greedy greedy = new Greedy(data);
         greedy.calculate();
+        for (Resource resource : greedy.resources) {
+            System.out.println(resource);
+        }
 //        System.out.println(greedy.getResources());
     }
 

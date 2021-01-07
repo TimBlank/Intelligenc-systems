@@ -53,7 +53,7 @@ public class Resource {
         operations.sort(Comparator.comparingInt(o -> o.startTime));
         String text = "";
         for (Operation operation : operations) {
-            text += "[" + operation.job + "-" + operation.startTime + "-" + (operation.startTime + operation.duration) + "]";
+            text += "[" + operation.startTime + "-" + operation.job + "-" + (operation.startTime + operation.duration) + "]";
         }
         return "[ id: " + id + " Ops:" + text + " ]";
     }
