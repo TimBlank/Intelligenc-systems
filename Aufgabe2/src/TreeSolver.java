@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class TreeSolver {
 
 
-    public static String FILE  = "Aufgabe2/tents_trees_4.csv";
+    public static String FILE  = "Aufgabe2/tents_trees_2.csv";
 
     public static void main(String[] args) {
         TreeSolver tS = new TreeSolver();
@@ -88,22 +88,55 @@ public class TreeSolver {
 
         //Go through columns
         for(int i=0; i<state.field.size(); i++) {
-            if(state.columnDemand[i] < 1) { //This column CAN NOT have trees
+            if(state.columnDemand[i] < 1) { //This column CAN NOT have tents
 
                 for(int j=0; j< state.field.get(i).size(); j++) {
                     if(!state.isConfirmed(i,j)) {
                         state.set(i,j, State.GRASS);
                     }
                 }
+            } else {
+                int tentsPlaced = 0;
+                for(int j=0; j< state.field.get(i).size(); j++) {
+                    if(state.is(i, j, State.TENT) ) {
+                        tentsPlaced++;
+                    }
+                }
+                if(state.columnDemand[i] == tentsPlaced) {
+                    //Mark all fields as Grass
+                    for(int j=0; j< state.field.get(i).size(); j++) {
+                        if(!state.isConfirmed(i,j)) {
+                            state.set(i,j, State.GRASS);
+                        }
+                    }
+                }
+
             }
         }
         //Go through rows
         for(int i=0; i<state.field.get(0).size(); i++) {
-            if(state.rowDemand[i] < 1) { //This column CAN NOT have trees
+            if(state.rowDemand[i] < 1) { //This column CAN NOT have tents
 
                 for(int j=0; j< state.field.size(); j++) {
                     if(!state.isConfirmed(j,i)) {
                         state.set(j,i, State.GRASS);
+                    }
+                }
+            } else {
+                int tentsPlaced = 0;
+                for(int j=0; j< state.field.size(); j++) {
+                    if(state.is(j,i, State.TENT)) {
+                        tentsPlaced++;
+                    }
+                }
+
+                //All tents placed
+                if(state.rowDemand[i] == tentsPlaced) {
+
+                    for(int j=0; j< state.field.size(); j++) {
+                        if(!state.isConfirmed(j,i)) {
+                            state.set(j,i, State.GRASS);
+                        }
                     }
                 }
             }
@@ -194,6 +227,15 @@ public class TreeSolver {
                 }
             }
         }
+    }
+
+    /**
+     * Solves "entanglements", essentially "if I put a Tree here, it forces x and y to happen". x and y might make puzzle
+     * unsolvable, meaning there can't be a tree at the original position.
+     * @param state
+     */
+    public void level3checks(State state, int treeX, int treeY) {
+
     }
 
     public void recursiveSolver(State state) {
