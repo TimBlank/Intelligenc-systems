@@ -12,9 +12,9 @@ import java.util.ArrayList;
 public class State {
 
     public static final String TREE = "t";
-    public static final String GRASS = "G";
+    public static final String GRASS = "_";
     public static final String UNKNOWN = " ";
-    public static final String TENT = "T";
+    public static final String TENT = "X";
     public static final String NORTH_TREE = "N";
     public static final String SOUTH_TREE ="S";
     public static final String WEST_TREE = "W";

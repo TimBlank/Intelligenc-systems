@@ -18,7 +18,8 @@ public class TreeSolver {
             state.hasChanged = false;
             tS.level1checks(state);
         } while(state.hasChanged);
-        System.out.println(tS.countBoundSpacesColumn(state, 23));
+
+        tS.level2checks(state);
 
         state.showField();
     }
@@ -91,7 +92,7 @@ public class TreeSolver {
 
                 for(int j=0; j< state.field.get(i).size(); j++) {
                     if(!state.isConfirmed(i,j)) {
-                        state.set(i,j, "G");
+                        state.set(i,j, State.GRASS);
                     }
                 }
             }
@@ -102,7 +103,7 @@ public class TreeSolver {
 
                 for(int j=0; j< state.field.size(); j++) {
                     if(!state.isConfirmed(j,i)) {
-                        state.set(j,i, "G");
+                        state.set(j,i, State.GRASS);
                     }
                 }
             }
@@ -118,7 +119,7 @@ public class TreeSolver {
                     hasTree = hasTree || state.isTree(i+1,j);
                     hasTree = hasTree || state.isTree(i,j+1);
                     if(!hasTree) {
-                        state.set(i,j, "G");
+                        state.set(i,j, State.GRASS);
                     }
                 }
             }
@@ -183,10 +184,68 @@ public class TreeSolver {
      * @param state
      */
     public void level2checks(State state) {
-
+        for(int i=0; i< state.field.size(); i++) {
+            if(countBoundSpacesColumn(state, i) <= state.columnDemand[i]) {
+                System.out.println("column "+i+" needs as many trees as can fit");
+            }
+            if( i < state.field.get(i).size()) {
+                if (countBoundSpacesRow(state, i) <= state.rowDemand[i]) {
+                    System.out.println("row " + i + " needs all trees");
+                }
+            }
+        }
     }
 
-    //TODO: Rework this shit to actually count "placed" trees next time
+    public void recursiveSolver(State state) {
+        if(isDone(state)) {
+            state.showField();
+            return ;
+        }
+        //Pick random field to place Tree
+        int newTreeX = (int) Math.floor(Math.random()*state.field.size());
+        int newTreeY = (int) Math.floor(Math.random()*state.field.get(0).size());
+        if(state.is(newTreeX, newTreeY, State.UNKNOWN)) {
+           
+        }
+    }
+
+
+    public boolean isDone(State state) {
+        int[] rowSupply = new int[state.field.size()];
+        int[] columnSupply = new int[state.field.get(0).size()];
+
+        for (int i = 0; i < rowSupply.length; i++) {
+            rowSupply[i] = 0;
+        }
+        for (int i = 0; i < columnSupply.length; i++) {
+            columnSupply[i] = 0;
+        }
+
+        for (int i = 0; i < state.field.size(); i++) {
+
+            for (int j = 0; j < state.field.get(i).size(); j++) {
+                if (state.is(i, j, State.TENT)) {
+                    rowSupply[j]++;
+                    columnSupply[i]++;
+                }
+            }
+        }
+        for(int i=0; i< rowSupply.length; i++) {
+            if(rowSupply[i] != state.rowDemand[i]) {
+                return false;
+            }
+
+        }
+        for(int i=0; i< columnSupply.length; i++) {
+            if(columnSupply[i] != state.columnDemand[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 
     /**
      * Counts how many Trees at maximum can be placed in this Column.
