@@ -154,5 +154,21 @@ public class State {
         }
 
     }
+    public void setTent(int x, int y) {
+        field.get(x).set(y, TENT);
+        hasChanged = true;
+
+        //Tents can't have any other Tent around it
+        for(int i= x-1; i<= x+1; i++) {
+            for(int j= y-1; j <= y+1; j++) {
+
+                if(i > -1 && i < field.size() && j > -1 && j < field.get(i).size()) {
+                    if (field.get(i).get(j).equals(UNKNOWN)) {
+                        field.get(i).set(j, GRASS);
+                    }
+                }
+            }
+        }
+    }
 
 }

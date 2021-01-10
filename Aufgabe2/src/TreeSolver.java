@@ -5,21 +5,23 @@ import java.util.ArrayList;
 public class TreeSolver {
 
 
-    public static String FILE  = "Aufgabe2/tents_trees_2.csv";
+    public static String FILE  = "Aufgabe2/tents_trees_4.csv";
 
     public static void main(String[] args) {
         TreeSolver tS = new TreeSolver();
         State state = tS.readFile(FILE);
         state.showField();
         tS.markImpossibleFieldsAsGrass(state);
-        state.showField();
+
 
         do {
             state.hasChanged = false;
             tS.level1checks(state);
+            tS.level2checks(state);
+            state.showField();
         } while(state.hasChanged);
 
-        tS.level2checks(state);
+        //tS.level2checks(state);
 
         state.showField();
     }
@@ -218,12 +220,16 @@ public class TreeSolver {
      */
     public void level2checks(State state) {
         for(int i=0; i< state.field.size(); i++) {
-            if(countBoundSpacesColumn(state, i) <= state.columnDemand[i]) {
+            if(countBoundSpacesColumn(state, i) == state.columnDemand[i] && state.columnDemand[i] > 0) {
                 System.out.println("column "+i+" needs as many trees as can fit");
+                placeAllTreesInColumn(state, i);
+                return;
             }
             if( i < state.field.get(i).size()) {
-                if (countBoundSpacesRow(state, i) <= state.rowDemand[i]) {
+                if (countBoundSpacesRow(state, i) == state.rowDemand[i] && state.rowDemand[i] > 0) {
                     System.out.println("row " + i + " needs all trees");
+                    placeAllTreesInRow(state, i);
+                    return;
                 }
             }
         }
@@ -234,9 +240,11 @@ public class TreeSolver {
      * unsolvable, meaning there can't be a tree at the original position.
      * @param state
      */
-    public void level3checks(State state, int treeX, int treeY) {
-
+    public void level3checks(State state, int tentX, int tentY) {
+        //state.set( tentX, tentY, State.TENT);
     }
+
+
 
     public void recursiveSolver(State state) {
         if(isDone(state)) {
@@ -299,15 +307,17 @@ public class TreeSolver {
         for(int i=0; i< state.field.get(col).size(); i++) {
             String content = state.field.get(col).get(i);
             if(content.equals(State.GRASS)) {
+                //Grass can never include a Tent
                 continue;
             }
             if(content.equals(State.UNKNOWN)) {
-                //Find free space and add one if has unused Tree in surrounding columns
-                //i.e. Can place tent because of Tree UNBOUND
-                if(state.is(col-1, i, State.TREE) || state.is(col+1, i, State.TREE)) {
-                    counter++;
-                }
+
+                counter++;
+                //Cannot place a tree next field obviously
+                i++;
+                continue;
             }
+            /*
             if(content.equals(State.TREE)) {
                 //Find unused Tree in row and add one if has free space in column
                 //i.e. Can place tent because of BOUND tree
@@ -315,13 +325,28 @@ public class TreeSolver {
                     counter++;
                 }
             }
+            */
             //That counts all possibilities of placing a tree
 
-
-            //Maybe substract the "next" cell if would have placed a tree?
         }
+        System.out.println("Column "+col+" has "+counter +" space");
         return counter;
 
+    }
+    /**
+     * Places all Tents in all fields where it's clear, provided the column needs all possible fields filled
+     * @param state
+     * @param col
+     */
+    public void placeAllTreesInColumn(State state, int column) {
+        for(int i = 0; i< state.field.get(column).size(); i++) {
+            if(state.is(column, i, State.UNKNOWN)) {
+
+                if (!state.is(column, i+1, State.UNKNOWN) && !state.is(column, i-1, State.UNKNOWN)) {
+                    state.setTent(column, i);
+                }
+            }
+        }
     }
     /**
      * Counts how many Trees at maximum can be placed in this Row.
@@ -336,12 +361,12 @@ public class TreeSolver {
                 continue;
             }
             if(content.equals(State.UNKNOWN)) {
-                //Find free space and add one if has unused Tree in surrounding columns
-                //i.e. Can place tent because of Tree UNBOUND
-                if(state.is(i, row-1, State.TREE) || state.is(i, row+1, State.TREE)) {
+
                     counter++;
-                }
+                i++;
+                continue;
             }
+            /*
             if(content.equals(State.TREE)) {
                 //Find unused Tree in row and add one if has free space in column
                 //i.e. Can place tent because of BOUND tree
@@ -349,6 +374,8 @@ public class TreeSolver {
                     counter++;
                 }
             }
+
+             */
             //That counts all possibilities of placing a tree
 
 
@@ -356,6 +383,23 @@ public class TreeSolver {
         }
         return counter;
     }
+
+    /**
+     * Places all Tents in all fields where it's clear, provided the column needs all possible fields filled
+     * @param state
+     * @param row
+     */
+    public void placeAllTreesInRow(State state, int row) {
+        for(int i = 0; i< state.field.size(); i++) {
+            if(state.is(i, row, State.UNKNOWN)) {
+
+                if (!state.is(i+1, row, State.UNKNOWN) && !state.is(i-1, row, State.UNKNOWN)) {
+                    state.setTent(i,row);
+                }
+            }
+        }
+    }
+
 
 
 }
