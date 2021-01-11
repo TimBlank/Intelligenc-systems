@@ -83,7 +83,7 @@ public class Board {
                     if (field.up() != null && field.up().type() != Type.Tree) {
                         if (field.right() != null && field.right().type() != Type.Tree) {
                             if (field.down() != null && field.down().type() != Type.Tree) {
-                                field.setGarden();
+                                field.setGras();
                             }
                         }
                     }
@@ -98,7 +98,7 @@ public class Board {
             if (row.getDemand() == row.getTents()) {
                 for (Field field : row.getFields()) {
                     if (field.type() == Type.unknown) {
-                        field.setGarden();
+                        field.setGras();
                     }
                 }
             }
@@ -107,7 +107,7 @@ public class Board {
             if (column.getDemand() == column.getTents()) {
                 for (Field field : column.getFields()) {
                     if (field.type() == Type.unknown) {
-                        field.setGarden();
+                        field.setGras();
                     }
                 }
             }
@@ -118,16 +118,45 @@ public class Board {
         System.out.println(new Throwable().getStackTrace()[0].getMethodName());
         for (Field field : fields) {
             if (field.type() == Type.Tree) {
-                int count = 0;
+                int unknownFields = 0;
                 Field newTent = null;
                 Field[] directions = new Field[]{field.up(), field.right(), field.down(), field.left()};
                 for (Field field2 : directions) {
                     if (field2 != null && field2.type() == Type.unknown) {
                         newTent = field2;
-                        count++;
+                        unknownFields++;
                     }
                 }
-                if (count == 1) newTent.setTent(field);
+                if (unknownFields == 1) newTent.setTent(field);
+            }
+        }
+    }
+
+    public void calcTentProbability() {
+        System.out.println(new Throwable().getStackTrace()[0].getMethodName());
+        for (Field field : fields) {
+            if (field.type() == Type.Tree) {
+                int unknownFields = 0;
+                Field[] directions = new Field[]{field.up(), field.right(), field.down(), field.left()};
+                for (Field field2 : directions) {
+                    if (field2 != null && field2.type() == Type.unknown) {
+                        unknownFields++;
+                    }
+                }
+                for (Field field2 : directions) {
+                    if (field2 != null && field2.type() == Type.unknown) {
+                        field2.otherUnknownFields(field, unknownFields);
+                    }
+                }
+            }
+        }
+    }
+
+    public void markZeroTentAbleAsGrass() {
+        System.out.println(new Throwable().getStackTrace()[0].getMethodName());
+        for (Field field : fields) {
+            if (field.type() == Type.unknown && field.getTentAble() == 0) {
+                field.setGras();
             }
         }
     }

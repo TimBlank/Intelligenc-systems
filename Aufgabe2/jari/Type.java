@@ -1,5 +1,5 @@
 package jari;
 
 public enum Type {
-    Tent, Tree, Garden, unknown
+    Tent, Tree, Gras, unknown
 }

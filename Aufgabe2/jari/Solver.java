@@ -13,6 +13,10 @@ public class Solver {
         board.printBoard();
         board.markSingleUnknownAsTent();
         board.printBoard();
+        board.calcTentProbability();
+        board.printBoard();
+        board.markZeroTentAbleAsGrass();
+        board.printBoard();
     }
 
 }
