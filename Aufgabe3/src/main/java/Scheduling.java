@@ -14,6 +14,7 @@ public class Scheduling {
          InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("la01_10_jobs_5_resources.json");
         String json = readFromInputStream(is);
 //        System.out.println(json);
+        System.out.println("Greedy:");
         Data data = gson.fromJson(json, Data.class);
         for (Job job : data.jobs) {
             for (Operation operation : job.operations) {
@@ -21,15 +22,19 @@ public class Scheduling {
             }
         }
         System.out.println(data.toString());
-        /*
         Greedy greedy = new Greedy(data);
         greedy.calculate();
         for (Resource resource : greedy.resources) {
             System.out.println(resource);
         }
-         */
 
-        /**/
+        System.out.println("Random:");
+        data = gson.fromJson(json, Data.class);
+        for (Job job : data.jobs) {
+            for (Operation operation : job.operations) {
+                operation.job = job.id;
+            }
+        }
         Random random = new Random(data);
         random.calculate();
         for (Resource resource : random.resources) {
