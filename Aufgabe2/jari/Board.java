@@ -172,6 +172,9 @@ public class Board {
             for (Field field : row.getFields()) {
                 System.out.print(field.toString() + " ");
             }
+            System.out.print("| ");
+            System.out.print((double) ((int) (row.getPossibleTentsPossibility() * 10)) / 10 + "    ");
+            System.out.print(row.getPossibleTents() + "    ");
             System.out.println();
         }
     }

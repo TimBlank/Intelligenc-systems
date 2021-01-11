@@ -15,6 +15,24 @@ public class Group {
         return tents;
     }
 
+    public int getPossibleTents() {
+        int tents = 0;
+        for (Field field : fields) {
+            if (field.type() == Type.Tent) tents++;
+            if (field.type() == Type.unknown) tents++;
+        }
+        return tents;
+    }
+
+    public double getPossibleTentsPossibility() {
+        double tents = 0.0;
+        for (Field field : fields) {
+            if (field.type() == Type.Tent) tents++;
+            if (field.type() == Type.unknown) tents += field.getTentAble();
+        }
+        return tents;
+    }
+
     public int getPosition() {
         return position;
     }
