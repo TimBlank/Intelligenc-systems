@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class Random implements Algorithm {
+public class Randoms implements Algorithm {
     List<Resource> resources;
     List<Job> jobs;
 
-    public Random(Data data) {
+    public Randoms(Data data) {
         this.resources = data.resources;
         this.jobs = data.jobs;
     }
@@ -21,15 +22,12 @@ public class Random implements Algorithm {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation (max duration)
-            Operation nextOperation = operations.get(0);
-            /*
-            for (Operation operation : operations) {
-                if (operation.duration > nextOperation.duration) {
-                    nextOperation = operation;
-                }
-            }
-             */
+            //make Randomnumber between 0 an Operations.size
+            int op = operations.size();
+            Random random = new Random();
+            int nop = random.nextInt(op);
+            // getNextOperation (Random)
+            Operation nextOperation = operations.get(nop);
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
             for (Resource resource : resources) {
