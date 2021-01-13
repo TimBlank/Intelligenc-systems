@@ -165,6 +165,10 @@ public class State {
         return numberTents;
     }
 
+    public int[] findIndexTree(){
+
+    }
+
     public boolean noAdjacentTent(int x, int y){
         int count = 0;
         for(int i = x-1; i <= x+1; i++){
@@ -182,37 +186,16 @@ public class State {
     }
 
     public boolean possible(int x, int y){
-        if(numberTentsInRow(y) < rowDemand[y] && numberTentsInColumn(x) < columnDemand[x] && noAdjacentTent(x,y) == true){
+        if(numberTentsInRow(y) < rowDemand[y] && numberTentsInColumn(x) < columnDemand[x] && noAdjacentTent(x,y)){
             return true;
         } else{return false;}
     }
 
+    public boolean checkCheckableRows(){
 
+    }
+    public boolean rightSolution(){
 
-    public boolean treeWithTent(int x, int y){
-        //Tree is left of Tent
-        if(x-1 > 0){
-            if(field.get(x-1).get(y).equals(TENT)) {
-                return true;
-            }
-        }
-        if(x+1 < columnDemand.length){
-            if(field.get(x+1).get(y).equals(TENT)) {
-                return true;
-            }
-        }
-        if(y-1 > 0){
-            if(field.get(x).get(y-1).equals(TENT)) {
-                return true;
-            }
-        }
-        if(y+1 < rowDemand.length){
-            if(field.get(x).get(y+1).equals(TENT)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
 
