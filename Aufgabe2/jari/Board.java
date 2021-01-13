@@ -1,7 +1,5 @@
-package jari;
-
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Board {
@@ -13,14 +11,19 @@ public class Board {
         return columns;
     }
 
-    private ArrayList<Group> rows = new ArrayList<>();
-    private ArrayList<Group> columns = new ArrayList<>();
-    private ArrayList<Field> fields = new ArrayList<>();
+    public ArrayList<Field> getFields() {
+        return fields;
+    }
 
-    public Board(String filePath) {
+    private final ArrayList<Group> rows = new ArrayList<>();
+    private final ArrayList<Group> columns = new ArrayList<>();
+    public final ArrayList<Field> fields = new ArrayList<>();
+
+    public Board(String fileName) {
         try {
             //Open File, fill rows with Fields
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    this.getClass().getResourceAsStream("/" + fileName)));
 
             String line = bufferedReader.readLine();
             //Parse first line as demands for column
@@ -134,6 +137,17 @@ public class Board {
 
     public void calcTentProbability() {
         System.out.println(new Throwable().getStackTrace()[0].getMethodName());
+        for (Field field : fields) {
+            if (field.type() == Type.unknown) {
+                field.resetTentAble();
+                if (getColumn(field).getTents() == getColumn(field).getDemand()) {
+                    field.setGras();
+                }
+                if (getRow(field).getTents() == getRow(field).getDemand()) {
+                    field.setGras();
+                }
+            }
+        }
         for (Field field : fields) {
             if (field.type() == Type.Tree) {
                 int unknownFields = 0;

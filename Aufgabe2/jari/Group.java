@@ -1,5 +1,3 @@
-package jari;
-
 import java.util.ArrayList;
 
 public class Group {
