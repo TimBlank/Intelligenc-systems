@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class TreeSolver {
 
 
-    public static String FILE  = "Aufgabe2/tents_trees_4.csv";
+    public static String FILE  = "Aufgabe2/tents_trees_6.csv";
 
     public static void main(String[] args) {
         TreeSolver tS = new TreeSolver();
@@ -310,6 +310,7 @@ public class TreeSolver {
                 //Grass can never include a Tent
                 continue;
             }
+
             if(content.equals(State.UNKNOWN)) {
 
                 counter++;
@@ -329,14 +330,14 @@ public class TreeSolver {
             //That counts all possibilities of placing a tree
 
         }
-        System.out.println("Column "+col+" has "+counter +" space");
+        //System.out.println("Column "+col+" has "+counter +" space");
         return counter;
 
     }
     /**
      * Places all Tents in all fields where it's clear, provided the column needs all possible fields filled
      * @param state
-     * @param col
+     * @param column
      */
     public void placeAllTreesInColumn(State state, int column) {
         for(int i = 0; i< state.field.get(column).size(); i++) {
@@ -360,9 +361,10 @@ public class TreeSolver {
             if(content.equals(State.GRASS)) {
                 continue;
             }
+
             if(content.equals(State.UNKNOWN)) {
 
-                    counter++;
+                counter++;
                 i++;
                 continue;
             }
