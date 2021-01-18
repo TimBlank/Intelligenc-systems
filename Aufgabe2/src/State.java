@@ -165,15 +165,31 @@ public class State {
         return numberTents;
     }
 
-    public int[] findIndexTree(){
-
+    public int[] findIndexTree(int index){
+        int[] position = new int[2];
+        int tree = 0;
+        for(int y = 0; y < rowDemand.length; y++){
+            for(int x = 0; x < columnDemand.length; x++){
+                if(field.get(x).get(y).equals(TREE) || field.get(x).get(y).equals(WEST_TREE) || field.get(x).get(y).equals(EAST_TREE) || field.get(x).get(y).equals(NORTH_TREE) || field.get(x).get(y).equals(SOUTH_TREE)){
+                    tree++;
+                    if(tree-1 == index){
+                        position[0] = x;
+                        position[1] = y;
+                        return position;
+                    }
+                }
+            }
+        }
+        position[0] = 0;
+        position[1] = 0;
+        return position;
     }
 
     public boolean noAdjacentTent(int x, int y){
         int count = 0;
         for(int i = x-1; i <= x+1; i++){
             for(int j = y-1; j <= y+1; j++){
-                if(i > -1 && i < columnDemand.length && j > -1 && j < rowDemand.length) {
+                if(i >= 0 && i < columnDemand.length && j >= 0 && j < rowDemand.length) {
                     if(field.get(i).get(j) != (TENT)) {
                         count++;
                     }
@@ -185,17 +201,47 @@ public class State {
         } else{return false;}
     }
 
-    public boolean possible(int x, int y){
-        if(numberTentsInRow(y) < rowDemand[y] && numberTentsInColumn(x) < columnDemand[x] && noAdjacentTent(x,y)){
+    public boolean noTree(int x, int y){
+        if(field.get(x).get(y).equals(UNKNOWN) || field.get(x).get(y).equals(GRASS)){
             return true;
         } else{return false;}
     }
 
-    public boolean checkCheckableRows(){
+    public boolean possible(int x, int y){
+        if(numberTentsInRow(y) < rowDemand[y] && numberTentsInColumn(x) < columnDemand[x] && noAdjacentTent(x,y) && noTree(x, y) == true){
+            return true;
+        } else{return false;}
+    }
 
+    public boolean checkCheckableRows(int y){
+        int rightRows = 0;
+        if(y > 1){
+            for(int j = 0; j < y-2; j++){
+                if(rowDemand[j] == numberTentsInRow(j)){
+                    rightRows++;
+                }
+            }
+        }
+        if(rightRows == y-2){
+            return true;
+        }else{return false;}
     }
     public boolean rightSolution(){
-
+        int rightColumns = 0;
+        int rightRows = 0;
+        for(int x = 0; x < columnDemand.length; x++){
+            if(columnDemand[x] == numberTentsInColumn(x)){
+                rightColumns++;
+            }
+        }
+        for(int y = 0; y < rowDemand.length; y++){
+            if(rowDemand[y] == numberTentsInRow(y)){
+                rightRows++;
+            }
+        }
+        if(rightColumns == columnDemand.length && rightRows == rowDemand.length){
+            return true;
+        } else{return false;}
     }
 
 

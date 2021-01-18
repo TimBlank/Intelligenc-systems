@@ -5,17 +5,13 @@ import java.util.ArrayList;
 public class TreeSolver {
 
 
-    public static String FILE  = "Aufgabe2/tents_trees_0.csv";
+    public static String FILE  = "Aufgabe2/tents_trees_6.csv";
 
     public static void main(String[] args) {
         TreeSolver tS = new TreeSolver();
         State state = tS.readFile(FILE);
         state.showField();
-        tS.markImpossibleFieldsAsGrass(state);
-        state.showField();
-        tS.level1checks(state);
-        state.showField();
-        tS.level2checks(state);
+        tS.level2checks(state, 0);
         state.showField();
     }
 
@@ -182,86 +178,96 @@ public class TreeSolver {
     // recursive method
     public void level2checks(State state, int index) {
         for (int y = 0; y < state.rowDemand.length; y++) {
+           //disrupt wrong solutions early
+            if(y > 1 && state.checkCheckableRows(y) == false){
+                System.out.println(y-1 + " still not right");
+                index--;
+                recovery(state,index);
+            }
             for (int x = 0; x < state.columnDemand.length; x++) {
-
                 if (state.field.get(x).get(y).equals(state.TREE)) {
                     int[][] array;
                     array = new int[4][2];
-                    array[0][0] = x - 1;
-                    array[0][1] = y; // WEST_TREE
-                    array[1][0] = x + 1;
-                    array[1][1] = y; // EAST_TREE
-                    array[2][0] = x;
-                    array[2][1] = y - 1; // NORTH_TREE
-                    array[3][0] = x;
-                    array[3][1] = y + 1; // SOUTH_TREE
+                    array[0][0] = x - 1; array[0][1] = y; // WEST_TREE
+                    array[1][0] = x + 1; array[1][1] = y; // EAST_TREE
+                    array[2][0] = x; array[2][1] = y - 1; // NORTH_TREE
+                    array[3][0] = x; array[3][1] = y + 1; // SOUTH_TREE
                     for (int h = 0; h < 4; h++) {
                         int i = array[h][0];
                         int j = array[h][1];
-                        if (i > -1 && i < state.columnDemand.length && j > -1 && j < state.rowDemand.length) {
-                            if (state.possible(i, j) == true) {
-                                state.setTent(i, j, x, y);
-                                if (state.rightSolution() == true) {
-                                    System.out.println("Thats's it!");
-                                    state.showField();
-                                    return;
-                                }
+                        if (i >= 0 && i < state.columnDemand.length && j >= 0 && j < state.rowDemand.length && state.possible(i, j) == true) {
+                            state.setTent(i, j, x, y);
+                            if (state.rightSolution() == true) {
+                                System.out.println("Thats's it!");
                                 state.showField();
-                                index++;
-                                System.out.println(index + "increased");
-                                level2checks(state, index);
-
+                                return;
                             }
+                            index++;
+                            System.out.println(index-1 + " finished, increase to " + index);
+                            level2checks(state, index);
                         }
                     }
                     //in case of bad choice / dead-end
                     index--;
                     System.out.println(index + "reduced");
-                    System.out.println("Thats right");
-                    int[] position = state.findIndexTree(index);
-                    if (state.field.get(position[0]).get(position[1]).equals(state.WEST_TREE)) {
-                        state.set(position[0] - 1, position[1], " ");
-                        if (position[0] + 1 > -1 && position[0] + 1 < state.columnDemand.length) {
-                            if (state.possible(position[0] + 1, position[1]) == true) {
-                                state.setTent(position[0] + 1, position[1], position[0], position[1]);
-                                level2checks(state, index);
-                            }
-                        }
-                    }
-
-                    if (state.field.get(position[0]).get(position[1]).equals(state.EAST_TREE)) {
-                        state.set(position[0] + 1, position[1], " ");
-                        if (position[1] - 1 > -1 && position[1] - 1 < state.rowDemand.length) {
-                            if (state.possible(position[0], position[1] - 1) == true) {
-                                state.setTent(position[0], position[1] - 1, position[0], position[1]);
-                                level2checks(state, index);
-                            }
-                        }
-                    }
-
-
-                    if (state.field.get(position[0]).get(position[1]).equals(state.NORTH_TREE)) {
-                        state.set(position[0], position[1] + 1, " ");
-                        if (position[1] + 1 > -1 && position[1] + 1 < state.rowDemand.length) {
-                            if (state.possible(position[0], position[1] + 1) == true) {
-                                state.setTent(position[0], position[1] + 1, position[0], position[1]);
-                                level2checks(state, index);
-                            }
-
-                        }
-
-                        if (state.field.get(position[0]).get(position[1]).equals(state.SOUTH_TREE)) {
-                            state.set(position[0], position[1] + 1, " ");
-                            state.set(position[0], position[1], state.TREE);
-                            index--;
-                            level2checks(state, index);
-                        }
-                        System.out.println("its working");
-                    }
+                    recovery(state, index);
                 }
             }
         }
-
-
     }
+
+    public void recovery(State state, int index){
+        int n = 0;
+        int[] position = state.findIndexTree(index);
+        System.out.print(position[0]+ " ");
+        System.out.println(position[1]);
+        if (state.field.get(position[0]).get(position[1]).equals(state.TREE)) {
+            System.out.println("Impossible!!!!!!!!!!");
+        }
+        if (state.field.get(position[0]).get(position[1]).equals(state.WEST_TREE)) {
+            state.set(position[0] - 1, position[1], " ");
+            if (position[0] + 1 >= 0 && position[0] + 1 < state.columnDemand.length && state.possible(position[0] + 1, position[1]) == true) {
+                state.setTent(position[0] + 1, position[1], position[0], position[1]);
+                System.out.println(index + "changed2East");
+                index++;
+                level2checks(state, index);
+            } n = 1;
+        }
+
+        if (state.field.get(position[0]).get(position[1]).equals(state.EAST_TREE) || n == 1) {
+            if (state.field.get(position[0]).get(position[1]).equals(state.EAST_TREE)){
+                state.set(position[0] + 1, position[1], " ");
+            }
+            if (position[1] - 1 >= 0 && position[1] - 1 < state.rowDemand.length && state.possible(position[0], position[1] - 1) == true) {
+                state.setTent(position[0], position[1] - 1, position[0], position[1]);
+                System.out.println(index + "changed2North");
+                index++;
+                level2checks(state, index);
+            } n = 2;
+        }
+
+        if (state.field.get(position[0]).get(position[1]).equals(state.NORTH_TREE) || n == 2) {
+            if (state.field.get(position[0]).get(position[1]).equals(state.NORTH_TREE)){
+                state.set(position[0], position[1] - 1, " ");
+            }
+            if (position[1] + 1 >= 0 && position[1] + 1 < state.rowDemand.length && state.possible(position[0], position[1] + 1) == true) {
+                state.setTent(position[0], position[1] + 1, position[0], position[1]);
+                System.out.println(index + "changed2South");
+                index++;
+                level2checks(state, index);
+            }
+            n = 3;
+        }
+
+        if (state.field.get(position[0]).get(position[1]).equals(state.SOUTH_TREE) || n == 3) {
+            if (state.field.get(position[0]).get(position[1]).equals(state.SOUTH_TREE)){
+                state.set(position[0], position[1] + 1, " ");
+            }
+            state.set(position[0], position[1], state.TREE);
+            index--;
+            System.out.println(index + "GoFurtherBack");
+            recovery(state, index);
+        }
+    }
+
 }
