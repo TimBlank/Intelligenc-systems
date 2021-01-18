@@ -30,17 +30,17 @@ public class Statistics {
             //Speichert Rang & anzahl züge
 
             int n= i % 4;
-                    switch (game.winners.get(i).name) {//Beliebige anzahl an playern
-                        case "AGRESSIVE":
+                    switch (game.winners.get(i).order) {//Beliebige anzahl an playern
+                        case 1:
                             Agressiveplacing[n] = Agressiveplacing[n] +1;
                             break;
-                        case "WorstStoneFirst":
+                        case 2:
                             Defensiveplacing[n] = Defensiveplacing[n] +1;
                             break;
-                        case "DEFENSIVE":
+                        case 3:
                             WorstStoneFirstplacing[n] = WorstStoneFirstplacing[n] +1;
                             break;
-                        case "BestStoneFirst":
+                        case 4:
                             BeststoeFirstplacing[n] = BeststoeFirstplacing[n] +1;
                             break;
                         default:
@@ -81,7 +81,7 @@ public class Statistics {
             last = entry.getValue();
         }
         for(int i=0;i<4;i++){
-            System.out.println("Platz "+(i+1)+ " | Aggresive:" +Agressiveplacing[i] + " | Defensive:"+Defensiveplacing[i]+ " | Worst:"+ WorstStoneFirstplacing[i]+ " | Best:" +BeststoeFirstplacing[i]);
+            System.out.println("Platz "+(i+1)+ " | 1:" +Agressiveplacing[i] + " | 2:"+Defensiveplacing[i]+ " | 3:"+ WorstStoneFirstplacing[i]+ " | 4:" +BeststoeFirstplacing[i]);
         }
         return string.toString();
     }

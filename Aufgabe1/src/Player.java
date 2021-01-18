@@ -10,7 +10,7 @@ public class Player implements Steppable {
     public String name;
     public int rounds = 0;
     public int order;
-    public AgentType[] agentTypes;
+
     /**
      * Players goal Fields.
      */
@@ -22,11 +22,11 @@ public class Player implements Steppable {
 
     public boolean hasWon = false;
 
-    public Player(String color, String name, int order, AgentType[] agentTypes) {
+    public Player(String color, String name, int order) {
         this.color = color;
         this.name = name;
         this.order = order;
-        this.agentTypes = agentTypes;
+
     }
 
     @Override
@@ -114,7 +114,8 @@ public class Player implements Steppable {
                     killMoves.add(occupiedFields.get(i));
                 }
             }
-            if (killMoves.size() > 0) {
+            //If we must kill, restrict possible moves with killing moves, if any
+            if (killMoves.size() > 0 && Game.MUST_KILL) {
                 possibleMoves = killMoves;
             }
 
@@ -149,41 +150,7 @@ public class Player implements Steppable {
     }
 
     public Field chooseMove(int roll, List<Field> possibleMoves, Game game) {
-        HashMap<Field, Integer> moveStrength = new HashMap<>();
-        for (Field possibleMove : possibleMoves) {
-            moveStrength.put(possibleMove, 0);
-        }
-        for (AgentType agentType : this.agentTypes) {
-            moveStrength = multiplyStrength(moveStrength);
-            moveStrength = switch (agentType) {
-                case AGRESSIVE -> agressiveMove(game, moveStrength, roll);
-                case DEFENSIVE -> defensiveMove(game, moveStrength, roll);
-                case WORSTSTONE -> worstStoneMove(moveStrength);
-                case BESTSTONE -> bestStoneMove(game, moveStrength);
-            };
-        }
-        return maxMoveStrength(moveStrength);
-    }
-
-    public Field maxMoveStrength(HashMap<Field, Integer> moveStrength) {
-        if (moveStrength.size() == 1) {
-            return moveStrength.keySet().iterator().next();
-        }
-        int maxMoveStrength = 0;
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            maxMoveStrength = maxMoveStrength > entry.getValue() ? maxMoveStrength : entry.getValue();
-        }
-        HashMap<Field, Integer> newMoveStrength = new HashMap<>();
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            if (entry.getValue() == maxMoveStrength) {
-                newMoveStrength.put(entry.getKey(), entry.getValue());
-            }
-        }
-        List<Field> fields = new ArrayList();
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            fields.add(entry.getKey());
-        }
-        return fields.get(new Random().nextInt(fields.size()));
+        return possibleMoves.get(game.random.nextInt(possibleMoves.size()));
     }
 
     private HashMap<Field, Integer> multiplyStrength(HashMap<Field, Integer> moveStrength) {

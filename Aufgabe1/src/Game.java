@@ -34,12 +34,16 @@ public class Game extends SimState {
 
     public static final int DISTANCE = 10;
     public static final int STONES = 4;
+    /**
+     * Schlagzwang?
+     */
+    public static final boolean MUST_KILL = false;
 
     public Player[] players = {
-            new Player(ANSI_RED_BACKGROUND, "AGRESSIVE", 1, new AgentType[]{AgentType.AGRESSIVE}),
-            new Player(ANSI_YELLOW_BACKGROUND, "WorstStoneFirst", 2, new AgentType[]{AgentType.WORSTSTONE}),
-            new Player(ANSI_BLUE_BACKGROUND, "DEFENSIVE", 3, new AgentType[]{AgentType.DEFENSIVE}),
-            new Player(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4, new AgentType[]{AgentType.BESTSTONE}),
+            new LastStoneMover(ANSI_RED_BACKGROUND, "LastStoneFirst", 1),
+            new Player(ANSI_YELLOW_BACKGROUND, "Random", 2),
+            new Player(ANSI_BLUE_BACKGROUND, "Random", 3),
+            new FirstStoneMover(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4)
     };
 
     List<Player> winners = new ArrayList<>();
