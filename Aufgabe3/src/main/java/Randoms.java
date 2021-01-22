@@ -13,6 +13,8 @@ public class Randoms implements Algorithm {
 
     @Override
     public void calculate() {
+        int itterations =0;
+        int endtime=0;
         while (true) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -30,6 +32,7 @@ public class Randoms implements Algorithm {
             Operation nextOperation = operations.get(nop);
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
+            itterations= itterations+1;
             for (Resource resource : resources) {
                 if (resource.id == nextOperation.resource) {
                     nextResource = resource;
@@ -44,6 +47,10 @@ public class Randoms implements Algorithm {
                     break;
                 }
             }
+            // get max Endtime
+            if(endtime<jobEnd){
+                endtime = jobEnd;
+            }
             // calc starttime out of Resource (min Starttime combined with duration)
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
@@ -55,7 +62,10 @@ public class Randoms implements Algorithm {
                     break;
                 }
             }
-            if (ready) return;
+            if (ready){
+                System.out.println("Anzahl operationen: "+ itterations +" |  Ende der letzten operation: " +endtime);
+                return;
+            }
         }
     }
 }

@@ -15,28 +15,35 @@ public class Scheduling {
          * Speichert alle Datei namen aus Ressource in eine Liste
          */
         File[] files;
-        //TODO Dynamic Path
-        files = new File("C:\\Users\\timyb\\IdeaProjects\\Intelligenc-systems\\Aufgabe3\\src\\main\\resources").listFiles();
+       files = new File(".\\Aufgabe3\\src\\main\\resources").listFiles();
         String Dateiname;
 //        for (int i=0; i< files.length;i++) {
 //            Dateiname = files[i].getName();
 //            System.out.println("Nummer:"+i+ " | "+Dateiname);
 //        }
-
 //        System.out.println(json);
+
         /**
          * Führt, für alle Dateien aus der Liste, die Sortierungen aus
+         * i von 0 bis 80
          */
-        for (int i=0; i< files.length;i++) {
+        long timeStart;
+        long timeEnd;
+        //  for (int i=0; i< files.length;i++) {
+            for (int i=0; i< 1;i++) {
             Dateiname = files[i].getName();
+                System.out.println("----------------------------------------------------------------------------------");
             System.out.println("Nummer:"+i+ " | "+Dateiname);
             InputStream is = Scheduling.class.getClassLoader().getResourceAsStream(Dateiname);
             String json = readFromInputStream(is);
             Data data = gson.fromJson(json, Data.class);
 
+            //System.out.println(data.toString());
 
-            /** Random Job sorter
-             *
+
+            /** Random
+             * Es wird zuffälig zwischen den möglichen
+             * Jobs einer in reihenfolge ausgewählt
              */
             System.out.println("Random:");
             data = gson.fromJson(json, Data.class);
@@ -45,13 +52,18 @@ public class Scheduling {
                     operation.job = job.id;
                 }
             }
-            Randoms random = new Randoms(data);
+            timeStart = System.nanoTime();
+              Randoms random = new Randoms(data);
             random.calculate();
-            for (Resource resource : random.resources) {
+            timeEnd = System.nanoTime();
+              for (Resource resource : random.resources) {
                 System.out.println(resource);
             }
-            /* * Greedy(longest job next) Job sorter
-             *
+            System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+
+
+            /** Greedy
+             * (longest Operation next)
              */
             System.out.println("Greedy:");
             data = gson.fromJson(json, Data.class);
@@ -60,14 +72,19 @@ public class Scheduling {
                     operation.job = job.id;
                 }
             }
-            System.out.println(data.toString());
-            Greedy greedy = new Greedy(data);
+              timeStart = System.nanoTime();
+              Greedy greedy = new Greedy(data);
             greedy.calculate();
-            for (Resource resource : greedy.resources) {
+              timeEnd = System.nanoTime();
+              for (Resource resource : greedy.resources) {
                 System.out.println(resource);
             }
-            /* * Shortest-Job-Next sorter
-             *
+              System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+
+
+            /** Shortest-Job-Next
+             * Es wird in Reihenfolge immer die
+             * kürzeste Operation ausgewählt
              */
             System.out.println("Shortest-Job-Next:");
             data = gson.fromJson(json, Data.class);
@@ -76,16 +93,23 @@ public class Scheduling {
                     operation.job = job.id;
                 }
             }
-            SPT spt = new SPT(data);
+              timeStart = System.nanoTime();
+              SPT spt = new SPT(data);
             spt.calculate();
-            for (Resource resource : spt.resources) {
+            timeEnd = System.nanoTime();
+              for (Resource resource : spt.resources) {
                 System.out.println(resource);
             }
-            /* * Earliest Due Date sorter
-             *
+              System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+
+
+            /** Earliest Due Date
+             * Da kein Due Date für die Jobs mit gegeben wurde
+             * wird der Gesamt Entzeitpunkt des Jobs
+             * als Due Date verwendet
              */
-            System.out.println("Earliest Due Date:");
-            System.out.println("NOT READY");
+            //System.out.println("Earliest Due Date:");
+            //System.out.println("NOT READY");
 /*          data = gson.fromJson(json, Data.class);
                 for (Job job : data.jobs) {
                     for (Operation operation : job.operations) {
@@ -93,12 +117,17 @@ public class Scheduling {
                     }
                 }
              EDD edd = new EDD(data);
+             timeStart = System.currentTimeMillis();
              edd.calculate();
+             timeEnd = System.currentTimeMillis();
              for (Resource resource : edd.resources) {
                 System.out.println(resource);
-             }*/
+             }
+             System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+*/
         }
 //        System.out.println(greedy.getResources());
+
     }
 
     private static String readFromInputStream(InputStream inputStream)

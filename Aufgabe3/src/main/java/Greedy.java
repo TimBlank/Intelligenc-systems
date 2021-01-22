@@ -12,6 +12,8 @@ public class Greedy implements Algorithm {
 
     @Override
     public void calculate() {
+        int itterations =0;
+        int endtime=0;
         while (true) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -25,6 +27,7 @@ public class Greedy implements Algorithm {
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
                 if (operation.duration > nextOperation.duration) {
+                    itterations= itterations+1;
                     nextOperation = operation;
                 }
             }
@@ -44,6 +47,10 @@ public class Greedy implements Algorithm {
                     break;
                 }
             }
+            // get max Endtime
+            if(endtime<jobEnd){
+                endtime = jobEnd+nextOperation.duration;
+            }
             // calc starttime out of Resource (min Starttime combined with duration)
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
@@ -55,7 +62,10 @@ public class Greedy implements Algorithm {
                     break;
                 }
             }
-            if (ready) return;
+            if (ready){
+                System.out.println("Anzahl operationen: "+ itterations +" |  Ende der letzten operation: " +endtime);
+                return;
+            }
         }
     }
 }

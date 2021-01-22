@@ -12,6 +12,8 @@ public class SPT implements Algorithm {
 
     @Override
     public void calculate() {
+        int itterations =0;
+        int endtime =0;
         while (true) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -25,6 +27,7 @@ public class SPT implements Algorithm {
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
                 if (operation.duration < nextOperation.duration) {
+                    itterations= itterations+1;
                     nextOperation = operation;
                 }
             }
@@ -44,18 +47,26 @@ public class SPT implements Algorithm {
                     break;
                 }
             }
+            // get max Endtime
+            if(endtime<jobEnd){
+                endtime = jobEnd;
+            }
             // calc starttime out of Resource (min Starttime combined with duration)
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
             // Check ready
             boolean ready = true;
+
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
                     break;
                 }
             }
-            if (ready) return;
+            if (ready){
+                System.out.println("Anzahl operationen: "+ itterations +" |  Ende der letzten operation: " +endtime);
+                return;
+            }
         }
     }
 }

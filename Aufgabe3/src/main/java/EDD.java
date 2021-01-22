@@ -13,6 +13,7 @@ public class EDD implements Algorithm {
 
     @Override
     public void calculate() {
+        int itterations =0;
         while (true) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -51,6 +52,7 @@ public class EDD implements Algorithm {
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
+
                     break;
                 }
             }
