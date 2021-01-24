@@ -1,18 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Greedy implements Algorithm {
+public class Greedy implements Algorithm, AlgorithmWeights {
+    Data data;
     List<Resource> resources;
     List<Job> jobs;
-    int itterations=0;
+    double[] weight;
+    int itterations = 0;
 
-    public Greedy(Data data) {
+    public Greedy(Data data, double[] weight) {
+        this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
+        this.weight = weight;
     }
 
     @Override
     public void calculate() {
+//        TODO: Greedy with Weight
         boolean ready = false;
         while (!ready) {
             // getOperations
@@ -51,7 +56,7 @@ public class Greedy implements Algorithm {
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
             // Check ready
-             ready = true;
+            ready = true;
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
@@ -69,5 +74,20 @@ public class Greedy implements Algorithm {
     @Override
     public int getItterations() {
         return itterations;
+    }
+
+    @Override
+    public int getFinishTime() {
+        return data.getFinishTime(this);
+    }
+
+    @Override
+    public double[] getWeights() {
+        return this.weight;
+    }
+
+    @Override
+    public Data getData() {
+        return this.data;
     }
 }

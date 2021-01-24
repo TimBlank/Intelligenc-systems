@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Random;
 
 public class Data {
     public List<Resource> resources;
@@ -18,23 +17,21 @@ public class Data {
 
         switch (name) {
             case "Random" -> algorithm = new Randoms(this);
-            case "Greedy" -> algorithm = new Greedy(this);
+            case "Greedy" -> algorithm = new Greedy(this, new double[0]);
             case "Shortest-Job-Next" -> algorithm = new SPT(this);
-            case "Earliest Due Date"-> algorithm = new EDD(this);
+            case "Earliest Due Date" -> algorithm = new EDD(this, new double[0]);
+            case "Swarm Intelligence" -> algorithm = new swarmIntelligence(this);
             default -> System.exit(0);
         }
         algorithm.calculate();
-        long timeEnd = System.nanoTime();
-        int finishTime = 0;
 
         for (Resource resource : algorithm.getResources()) {
             System.out.println(resource);
-            int newFinishTime = resource.getFinishTime();
-            if (newFinishTime>finishTime){
-                finishTime=newFinishTime;
-            }
         }
-        System.out.println("Anzahl operationen: "+ algorithm.getItterations() +" |  Ende der letzten operation: " +finishTime);
+
+        long timeEnd = System.nanoTime();
+
+        System.out.println("Anzahl operationen: " + algorithm.getItterations() + " |  Ende der letzten operation: " + getFinishTime(algorithm));
         System.out.println("Laufzeit: " + (timeEnd - timeStart) + " Ns" + " | minimale Jobzeit: " + this.getminTime());
     }
 
@@ -62,6 +59,17 @@ public class Data {
         return "[ resources: " + resources + ", operations: " + jobs + " ]";
     }
 
+    int getFinishTime(Algorithm algorithm) {
+        int finishTime = 0;
 
-
+        for (Resource resource : algorithm.getResources()) {
+//            System.out.println(resource);
+            int newFinishTime = resource.getFinishTime();
+            if (newFinishTime > finishTime) {
+                finishTime = newFinishTime;
+            }
+        }
+        return finishTime;
+    }
 }
+

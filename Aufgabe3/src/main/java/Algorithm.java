@@ -5,4 +5,6 @@ public interface Algorithm {
     List<Resource> getResources();
 
     int getItterations();
+
+    int getFinishTime();
 }

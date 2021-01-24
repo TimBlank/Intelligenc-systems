@@ -15,7 +15,7 @@ public class Scheduling {
          * Speichert alle Datei namen aus Ressource in eine Liste
          */
         File[] files;
-       files = new File(".\\Aufgabe3\\src\\main\\resources").listFiles();
+        files = new File(".\\Aufgabe3\\src\\main\\resources").listFiles();
         String Dateiname;
 //        for (int i=0; i< files.length;i++) {
 //            Dateiname = files[i].getName();
@@ -30,10 +30,10 @@ public class Scheduling {
         long timeStart;
         long timeEnd;
         //  for (int i=0; i< files.length;i++) {
-            for (int i=0; i< 1;i++) {
+        for (int i = 0; i < 1; i++) {
             Dateiname = files[i].getName();
-                System.out.println("----------------------------------------------------------------------------------");
-            System.out.println("Nummer:"+i+ " | "+Dateiname);
+            System.out.println("----------------------------------------------------------------------------------");
+            System.out.println("Nummer:" + i + " | " + Dateiname);
             InputStream is = Scheduling.class.getClassLoader().getResourceAsStream(Dateiname);
             String json = readFromInputStream(is);
             Data data = gson.fromJson(json, Data.class);
@@ -47,60 +47,36 @@ public class Scheduling {
              */
             data = gson.fromJson(json, Data.class);
             data.work("Random");
-            /*for (Job job : data.jobs) {
-                for (Operation operation : job.operations) {
-                    operation.job = job.id;
-                }
-            }
-            timeStart = System.nanoTime();
-              Randoms random = new Randoms(data);
-            random.calculate();
-            timeEnd = System.nanoTime();
-              for (Resource resource : random.resources) {
-                System.out.println(resource);
-            }
-            System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns" + " | minimale Jobzeit: " + data.getminTime() );*/
-
 
             /** Greedy
              * (longest Operation next)
              */
             data = gson.fromJson(json, Data.class);
-                data.work("Greedy");
-
+            data.work("Greedy");
 
             /** Shortest-Job-Next
              * Es wird in Reihenfolge immer die
              * kürzeste Operation ausgewählt
              */
-            //System.out.println("Shortest-Job-Next:");
             data = gson.fromJson(json, Data.class);
             data.work("Shortest-Job-Next");
-
-
 
             /** Earliest Due Date
              * Da kein Due Date für die Jobs mit gegeben wurde
              * wird der Gesamt Entzeitpunkt des Jobs
              * als Due Date verwendet
              */
-            //System.out.println("Earliest Due Date:");
-            //System.out.println("NOT READY");
-/*          data = gson.fromJson(json, Data.class);
-                for (Job job : data.jobs) {
-                    for (Operation operation : job.operations) {
-                        operation.job = job.id;
-                    }
-                }
-             EDD edd = new EDD(data);
-             timeStart = System.currentTimeMillis();
-             edd.calculate();
-             timeEnd = System.currentTimeMillis();
-             for (Resource resource : edd.resources) {
-                System.out.println(resource);
-             }
-             System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
-*/
+//             data = gson.fromJson(json, Data.class);
+//             data.work("Earliest Due Date");
+
+            /** Earliest Due Date
+             * Da kein Due Date für die Jobs mit gegeben wurde
+             * wird der Gesamt Entzeitpunkt des Jobs
+             * als Due Date verwendet
+             */
+//            data = gson.fromJson(json, Data.class);
+//            data.work("Swarm Intelligence");
+
         }
 //        System.out.println(greedy.getResources());
 

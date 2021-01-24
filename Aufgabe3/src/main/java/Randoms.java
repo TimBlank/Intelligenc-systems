@@ -3,11 +3,13 @@ import java.util.List;
 import java.util.Random;
 
 public class Randoms implements Algorithm {
+    Data data;
     List<Resource> resources;
     List<Job> jobs;
     int itterations=0;
 
     public Randoms(Data data) {
+        this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
     }
@@ -51,7 +53,7 @@ public class Randoms implements Algorithm {
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
             // Check ready
-             ready = true;
+            ready = true;
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
@@ -69,5 +71,10 @@ public class Randoms implements Algorithm {
     @Override
     public int getItterations() {
         return itterations;
+    }
+
+    @Override
+    public int getFinishTime() {
+        return data.getFinishTime(this);
     }
 }

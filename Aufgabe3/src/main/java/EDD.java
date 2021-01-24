@@ -1,19 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class EDD implements Algorithm {
+    Data data;
     List<Resource> resources;
     List<Job> jobs;
+    double[] weight;
+    int itterations = 0;
 
-    public EDD(Data data) {
+    public EDD(Data data, double[] weight) {
+        this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
+        this.weight = weight;
     }
 
     @Override
     public void calculate() {
-        int itterations =0;
+//        TODO: Greedy with Weight;
         while (true) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -68,5 +72,10 @@ public class EDD implements Algorithm {
     @Override
     public int getItterations() {
         return 0;
+    }
+
+    @Override
+    public int getFinishTime() {
+        return data.getFinishTime(this);
     }
 }

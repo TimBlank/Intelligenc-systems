@@ -2,11 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SPT implements Algorithm {
+    Data data;
     List<Resource> resources;
     List<Job> jobs;
     int itterations=0;
 
     public SPT(Data data) {
+        this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
     }
@@ -69,5 +71,10 @@ public class SPT implements Algorithm {
     @Override
     public int getItterations() {
         return itterations;
+    }
+
+    @Override
+    public int getFinishTime() {
+        return data.getFinishTime(this);
     }
 }
