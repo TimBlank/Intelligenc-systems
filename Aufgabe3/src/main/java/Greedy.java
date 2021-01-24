@@ -4,6 +4,7 @@ import java.util.List;
 public class Greedy implements Algorithm {
     List<Resource> resources;
     List<Job> jobs;
+    int itterations=0;
 
     public Greedy(Data data) {
         this.resources = data.resources;
@@ -12,9 +13,8 @@ public class Greedy implements Algorithm {
 
     @Override
     public void calculate() {
-        int itterations =0;
-        int endtime=0;
-        while (true) {
+        boolean ready = false;
+        while (!ready) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
             for (Job job : jobs) {
@@ -47,25 +47,27 @@ public class Greedy implements Algorithm {
                     break;
                 }
             }
-            // get max Endtime
-            if(endtime<jobEnd){
-                endtime = jobEnd+nextOperation.duration;
-            }
             // calc starttime out of Resource (min Starttime combined with duration)
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
             // Check ready
-            boolean ready = true;
+             ready = true;
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
                     break;
                 }
             }
-            if (ready){
-                System.out.println("Anzahl operationen: "+ itterations +" |  Ende der letzten operation: " +endtime);
-                return;
-            }
         }
+    }
+
+    @Override
+    public List<Resource> getResources() {
+        return this.resources;
+    }
+
+    @Override
+    public int getItterations() {
+        return itterations;
     }
 }

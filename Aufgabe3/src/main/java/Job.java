@@ -49,6 +49,14 @@ public class Job {
         return true;
     }
 
+    int getminTime() {
+        int time = 0;
+        for (Operation operation : operations) {
+            time += operation.duration;
+        }
+        return time;
+    }
+
     @Override
     public String toString() {
         return "[ id: " + id + ", operations: " + operations + " ]";

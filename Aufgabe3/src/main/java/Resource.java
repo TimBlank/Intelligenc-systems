@@ -57,4 +57,24 @@ public class Resource {
         }
         return "[ id: " + id + " Ops:" + text + " ]";
     }
+
+    int getminTime() {
+        int time = 0;
+        for (Operation operation : operations) {
+            time += operation.duration;
+        }
+        return time;
+    }
+
+    public int getFinishTime() {
+        int time = 0;
+        for (Operation operation : operations) {
+            int newTime = operation.startTime+ operation.duration;
+            if (newTime>time){
+                time =newTime;
+            }
+        }
+        return time;
+    }
+
 }

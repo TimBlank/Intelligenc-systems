@@ -45,9 +45,9 @@ public class Scheduling {
              * Es wird zuffälig zwischen den möglichen
              * Jobs einer in reihenfolge ausgewählt
              */
-            System.out.println("Random:");
             data = gson.fromJson(json, Data.class);
-            for (Job job : data.jobs) {
+            data.work("Random");
+            /*for (Job job : data.jobs) {
                 for (Operation operation : job.operations) {
                     operation.job = job.id;
                 }
@@ -59,48 +59,24 @@ public class Scheduling {
               for (Resource resource : random.resources) {
                 System.out.println(resource);
             }
-            System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+            System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns" + " | minimale Jobzeit: " + data.getminTime() );*/
 
 
             /** Greedy
              * (longest Operation next)
              */
-            System.out.println("Greedy:");
             data = gson.fromJson(json, Data.class);
-            for (Job job : data.jobs) {
-                for (Operation operation : job.operations) {
-                    operation.job = job.id;
-                }
-            }
-              timeStart = System.nanoTime();
-              Greedy greedy = new Greedy(data);
-            greedy.calculate();
-              timeEnd = System.nanoTime();
-              for (Resource resource : greedy.resources) {
-                System.out.println(resource);
-            }
-              System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+                data.work("Greedy");
 
 
             /** Shortest-Job-Next
              * Es wird in Reihenfolge immer die
              * kürzeste Operation ausgewählt
              */
-            System.out.println("Shortest-Job-Next:");
+            //System.out.println("Shortest-Job-Next:");
             data = gson.fromJson(json, Data.class);
-            for (Job job : data.jobs) {
-                for (Operation operation : job.operations) {
-                    operation.job = job.id;
-                }
-            }
-              timeStart = System.nanoTime();
-              SPT spt = new SPT(data);
-            spt.calculate();
-            timeEnd = System.nanoTime();
-              for (Resource resource : spt.resources) {
-                System.out.println(resource);
-            }
-              System.out.println("Laufzeit: "+ (timeEnd-timeStart)+" Ns");
+            data.work("Shortest-Job-Next");
+
 
 
             /** Earliest Due Date

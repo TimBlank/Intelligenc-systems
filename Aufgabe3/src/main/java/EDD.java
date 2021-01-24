@@ -59,4 +59,14 @@ public class EDD implements Algorithm {
             if (ready) return;
         }
     }
+
+    @Override
+    public List<Resource> getResources() {
+        return this.resources;
+    }
+
+    @Override
+    public int getItterations() {
+        return 0;
+    }
 }
