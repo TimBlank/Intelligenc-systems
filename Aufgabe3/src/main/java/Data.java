@@ -15,18 +15,36 @@ public class Data {
         long timeStart = System.nanoTime();
         Algorithm algorithm = null;
 
+        double[] weights = new double[this.jobs.size()];
+        /*
+         * create inital weights
+         */
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] = Math.random();
+//            System.out.println(weights[i]);
+        }
+        double[] dueDate = new double[this.jobs.size()];
+        /*
+         * create inital do Date
+         */
+        for (int i = 0; i < dueDate.length; i++) {
+            dueDate[i] = Math.random();
+//            System.out.println(dueDate[i]);
+        }
+
         switch (name) {
             case "Random" -> algorithm = new Randoms(this);
-            case "Greedy" -> algorithm = new Greedy(this, new double[0]);
+            case "Greedy" -> algorithm = new Greedy(this, weights);
             case "Shortest-Job-Next" -> algorithm = new SPT(this);
-            case "Earliest Due Date" -> algorithm = new EDD(this, new double[0]);
+            case "Earliest Due Date" -> algorithm = new EDD(this, weights);
             case "Swarm Intelligence" -> algorithm = new swarmIntelligence(this);
             default -> System.exit(0);
         }
         algorithm.calculate();
 
+//        Zeigt alle Operatioen der Einzelnen Resourcen mit anfangs und endzeit sowie Job zugehörigkeit an
         for (Resource resource : algorithm.getResources()) {
-            System.out.println(resource);
+//            System.out.println(resource);
         }
 
         long timeEnd = System.nanoTime();

@@ -5,19 +5,18 @@ public class Greedy implements Algorithm, AlgorithmWeights {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    double[] weight;
+    double[] weights;
     int itterations = 0;
 
     public Greedy(Data data, double[] weight) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
-        this.weight = weight;
+        this.weights = weight;
     }
 
     @Override
     public void calculate() {
-//        TODO: Greedy with Weight
         boolean ready = false;
         while (!ready) {
             // getOperations
@@ -28,11 +27,12 @@ public class Greedy implements Algorithm, AlgorithmWeights {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation (max duration)
+            // getNextOperation with weights
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
-                if (operation.duration > nextOperation.duration) {
-                    itterations= itterations+1;
+//                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
+                if (weights[operation.job] > weights[nextOperation.job]) {
+                    itterations = itterations + 1;
                     nextOperation = operation;
                 }
             }
@@ -83,7 +83,7 @@ public class Greedy implements Algorithm, AlgorithmWeights {
 
     @Override
     public double[] getWeights() {
-        return this.weight;
+        return this.weights;
     }
 
     @Override

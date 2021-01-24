@@ -29,7 +29,7 @@ public class Scheduling {
          */
         long timeStart;
         long timeEnd;
-        //  for (int i=0; i< files.length;i++) {
+//        for (int i=0; i< files.length;i++) {
         for (int i = 0; i < 1; i++) {
             Dateiname = files[i].getName();
             System.out.println("----------------------------------------------------------------------------------");
@@ -48,12 +48,6 @@ public class Scheduling {
             data = gson.fromJson(json, Data.class);
             data.work("Random");
 
-            /** Greedy
-             * (longest Operation next)
-             */
-            data = gson.fromJson(json, Data.class);
-            data.work("Greedy");
-
             /** Shortest-Job-Next
              * Es wird in Reihenfolge immer die
              * kürzeste Operation ausgewählt
@@ -66,13 +60,19 @@ public class Scheduling {
              * wird der Gesamt Entzeitpunkt des Jobs
              * als Due Date verwendet
              */
-//             data = gson.fromJson(json, Data.class);
-//             data.work("Earliest Due Date");
+            data = gson.fromJson(json, Data.class);
+            data.work("Earliest Due Date");
 
-            /** Earliest Due Date
-             * Da kein Due Date für die Jobs mit gegeben wurde
-             * wird der Gesamt Entzeitpunkt des Jobs
-             * als Due Date verwendet
+            /** Greedy
+             * (longest Operation next)
+             */
+            data = gson.fromJson(json, Data.class);
+            data.work("Greedy");
+
+            /** Swarm Intelligence
+             * Erstellt Greedys mit
+             * leicht geänderten gewichten
+             * übergibt besten Greedy
              */
 //            data = gson.fromJson(json, Data.class);
 //            data.work("Swarm Intelligence");

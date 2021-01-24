@@ -33,11 +33,15 @@ public class swarmIntelligence implements Algorithm {
             /*
              * create inital weights
              */
-            for (double weight : weights) {
-                weight = Math.random();
+            for (int n = 0; n < weights.length; n++) {
+                weights[i] = Math.random();
+//            System.out.println(weights[i]);
             }
             Greedy greedy = new Greedy(data, weights);
             greedy.calculate();
+            for (Resource resource : greedy.getResources()) {
+                System.out.println(resource);
+            }
             swarm.add(greedy);
         }
 

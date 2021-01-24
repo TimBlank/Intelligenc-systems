@@ -57,6 +57,10 @@ public class Job {
         return time;
     }
 
+    int getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "[ id: " + id + ", operations: " + operations + " ]";
