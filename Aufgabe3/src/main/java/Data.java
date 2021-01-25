@@ -27,8 +27,16 @@ public class Data {
         /*
          * create inital do Date
          */
+        int duDateDelay = 100;
         for (int i = 0; i < dueDate.length; i++) {
-            dueDate[i] = Math.random();
+
+            dueDate[i] = Math.floor(Math.random() * Math.floor(duDateDelay));
+//            System.out.println(dueDate[i]);
+        }
+        for (int i = 0; i < jobs.size(); i++) {
+            Job job = jobs.get(i);
+            dueDate[i] = dueDate[i] + job.getminTime();
+//            System.out.println(job.getminTime());
 //            System.out.println(dueDate[i]);
         }
 

@@ -6,6 +6,7 @@ public class Greedy implements Algorithm, AlgorithmWeights {
     List<Resource> resources;
     List<Job> jobs;
     double[] weights;
+    double[] duDates;
     int itterations = 0;
 
     public Greedy(Data data, double[] weight) {
@@ -84,6 +85,11 @@ public class Greedy implements Algorithm, AlgorithmWeights {
     @Override
     public double[] getWeights() {
         return this.weights;
+    }
+
+    @Override
+    public double[] getDuDate() {
+        return this.duDates;
     }
 
     @Override

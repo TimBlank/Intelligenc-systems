@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class EDD implements Algorithm {
+public class EDD implements Algorithm, AlgorithmWeights {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
     double[] dueDate;
+    double[] weights;
+    double[] duDates;
     int itterations = 0;
 
     public EDD(Data data, double[] weight) {
@@ -81,5 +83,20 @@ public class EDD implements Algorithm {
     @Override
     public int getFinishTime() {
         return data.getFinishTime(this);
+    }
+
+    @Override
+    public double[] getWeights() {
+        return this.weights;
+    }
+
+    @Override
+    public double[] getDuDate() {
+        return this.duDates;
+    }
+
+    @Override
+    public Data getData() {
+        return this.data;
     }
 }

@@ -29,8 +29,8 @@ public class Scheduling {
          */
         long timeStart;
         long timeEnd;
-//        for (int i=0; i< files.length;i++) {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < files.length; i++) {
+//        for (int i = 0; i < 1; i++) {
             Dateiname = files[i].getName();
             System.out.println("----------------------------------------------------------------------------------");
             System.out.println("Nummer:" + i + " | " + Dateiname);
