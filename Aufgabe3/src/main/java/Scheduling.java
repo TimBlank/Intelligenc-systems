@@ -23,7 +23,7 @@ public class Scheduling {
 //        }
 //        System.out.println(json);
 
-        /**
+        /*
          * Führt, für alle Dateien aus der Liste, die Sortierungen aus
          * i von 0 bis 80
          */
@@ -40,43 +40,44 @@ public class Scheduling {
 
             //System.out.println(data.toString());
 
-
-            /** Random
+            /* Random
              * Es wird zuffälig zwischen den möglichen
              * Jobs einer in reihenfolge ausgewählt
              */
             data = gson.fromJson(json, Data.class);
-            data.work("Random");
+            data.work(RandomAlgorithm.class);
 
-            /** Shortest-Job-Next
+            /* Shortest-Job-Next
              * Es wird in Reihenfolge immer die
              * kürzeste Operation ausgewählt
              */
             data = gson.fromJson(json, Data.class);
-            data.work("Shortest-Job-Next");
+            data.work(ShortestJobNextAlgorithm.class);
 
-            /** Earliest Due Date
+            /* Earliest Due Date
              * Da kein Due Date für die Jobs mit gegeben wurde
              * wird der Gesamt Entzeitpunkt des Jobs
              * als Due Date verwendet
              */
             data = gson.fromJson(json, Data.class);
-            data.work("Earliest Due Date");
+            data.work(EarliestDueDateAlgorithm.class);
+            System.out.println(data.toString());
 
-            /** Greedy
+            /* Greedy
              * (longest Operation next)
              */
             data = gson.fromJson(json, Data.class);
-            data.work("Greedy");
+            data.work(GreedyAlgorithm.class);
+            System.out.println(data.toString());
 
-            /** Swarm Intelligence
+            /* Swarm Intelligence
              * Erstellt Greedys mit
              * leicht geänderten gewichten
              * übergibt besten Greedy
              */
-//            data = gson.fromJson(json, Data.class);
-//            data.work("Swarm Intelligence");
-
+            data = gson.fromJson(json, Data.class);
+            data.work(SwarmIntelligenceAlgorithm.class);
+            System.out.println(data.toString());
         }
 //        System.out.println(greedy.getResources());
 

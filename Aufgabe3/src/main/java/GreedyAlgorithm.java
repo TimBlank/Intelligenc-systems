@@ -1,22 +1,23 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class Randoms implements Algorithm {
+public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    int itterations=0;
+    double[] weights;
+    int itterations = 0;
 
-    public Randoms(Data data) {
+    public GreedyAlgorithm(Data data, double[] weight) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
+        this.weights = weight;
     }
 
     @Override
     public void calculate() {
-        boolean ready =false;
+        boolean ready = false;
         while (!ready) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -26,15 +27,17 @@ public class Randoms implements Algorithm {
                     operations.add(job.getNextOperation());
                 }
             }
-            //make Randomnumber between 0 an Operations.size
-            int op = operations.size();
-            Random random = new Random();
-            int nop = random.nextInt(op);
-            // getNextOperation (Random)
-            Operation nextOperation = operations.get(nop);
+            // getNextOperation with weights
+            Operation nextOperation = operations.get(0);
+            for (Operation operation : operations) {
+//                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
+                if (weights[operation.job] > weights[nextOperation.job]) {
+                    itterations = itterations + 1;
+                    nextOperation = operation;
+                }
+            }
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
-            itterations= itterations+1;
             for (Resource resource : resources) {
                 if (resource.id == nextOperation.resource) {
                     nextResource = resource;
@@ -76,5 +79,15 @@ public class Randoms implements Algorithm {
     @Override
     public int getFinishTime() {
         return data.getFinishTime(this);
+    }
+
+    @Override
+    public double[] getWeights() {
+        return this.weights;
+    }
+
+    @Override
+    public Data getData() {
+        return this.data;
     }
 }

@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class EDD implements Algorithm {
+public class EarliestDueDateAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
     double[] dueDate;
     int itterations = 0;
 
-    public EDD(Data data, double[] weight) {
+    public EarliestDueDateAlgorithm(Data data, double[] weight) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;

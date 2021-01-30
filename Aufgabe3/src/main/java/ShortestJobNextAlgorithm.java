@@ -1,18 +1,16 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Greedy implements Algorithm, AlgorithmWeights {
+public class ShortestJobNextAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    double[] weights;
     int itterations = 0;
 
-    public Greedy(Data data, double[] weight) {
+    public ShortestJobNextAlgorithm(Data data) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
-        this.weights = weight;
     }
 
     @Override
@@ -27,12 +25,11 @@ public class Greedy implements Algorithm, AlgorithmWeights {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation with weights
+            // getNextOperation (min duration)
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
-//                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
-                if (weights[operation.job] > weights[nextOperation.job]) {
-                    itterations = itterations + 1;
+                if (operation.duration < nextOperation.duration) {
+                    itterations= itterations+1;
                     nextOperation = operation;
                 }
             }
@@ -79,15 +76,5 @@ public class Greedy implements Algorithm, AlgorithmWeights {
     @Override
     public int getFinishTime() {
         return data.getFinishTime(this);
-    }
-
-    @Override
-    public double[] getWeights() {
-        return this.weights;
-    }
-
-    @Override
-    public Data getData() {
-        return this.data;
     }
 }

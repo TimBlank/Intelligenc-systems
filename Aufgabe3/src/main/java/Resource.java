@@ -10,6 +10,11 @@ public class Resource {
         this.operations = new ArrayList<>();
     }
 
+    public Resource(Resource resource) {
+        this.id = resource.id;
+        this.operations = new ArrayList<>();
+    }
+
     public int getEndTime() {
         int time = 0;
         for (Operation operation : operations) {
@@ -51,11 +56,11 @@ public class Resource {
     @Override
     public String toString() {
         operations.sort(Comparator.comparingInt(o -> o.startTime));
-        String text = "";
+        StringBuilder stringBuilder = new StringBuilder();
         for (Operation operation : operations) {
-            text += "[" + operation.startTime + "-" + operation.job + "-" + (operation.startTime + operation.duration) + "]";
+            stringBuilder.append(String.format("[%s-%s-%s]", operation.startTime, operation.job, operation.startTime + operation.duration));
         }
-        return "[ id: " + id + " Ops:" + text + " ]";
+        return "[ id: " + id + " Ops:" + stringBuilder + " ]";
     }
 
     int getminTime() {
@@ -69,9 +74,9 @@ public class Resource {
     public int getFinishTime() {
         int time = 0;
         for (Operation operation : operations) {
-            int newTime = operation.startTime+ operation.duration;
-            if (newTime>time){
-                time =newTime;
+            int newTime = operation.startTime + operation.duration;
+            if (newTime > time) {
+                time = newTime;
             }
         }
         return time;

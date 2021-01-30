@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class SPT implements Algorithm {
+public class RandomAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    int itterations=0;
+    int itterations = 0;
 
-    public SPT(Data data) {
+    public RandomAlgorithm(Data data) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
@@ -15,7 +16,7 @@ public class SPT implements Algorithm {
 
     @Override
     public void calculate() {
-        boolean ready = false;
+        boolean ready =false;
         while (!ready) {
             // getOperations
             List<Operation> operations = new ArrayList<>();
@@ -25,16 +26,15 @@ public class SPT implements Algorithm {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation (min duration)
-            Operation nextOperation = operations.get(0);
-            for (Operation operation : operations) {
-                if (operation.duration < nextOperation.duration) {
-                    itterations= itterations+1;
-                    nextOperation = operation;
-                }
-            }
+            //make Randomnumber between 0 an Operations.size
+            int op = operations.size();
+            Random random = new Random();
+            int nop = random.nextInt(op);
+            // getNextOperation (Random)
+            Operation nextOperation = operations.get(nop);
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
+            itterations= itterations+1;
             for (Resource resource : resources) {
                 if (resource.id == nextOperation.resource) {
                     nextResource = resource;
