@@ -1,16 +1,18 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPT implements Algorithm {
+public class EarliestDueDateAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    int itterations=0;
+    double[] dueDate;
+    int itterations = 0;
 
-    public SPT(Data data) {
+    public EarliestDueDateAlgorithm(Data data, double[] weight) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
+        this.dueDate = weight;
     }
 
     @Override
@@ -25,14 +27,16 @@ public class SPT implements Algorithm {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation (min duration)
+            //TODO EDD Sort
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
-                if (operation.duration < nextOperation.duration) {
-                    itterations= itterations+1;
+//                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
+                if (dueDate[operation.job] > dueDate[nextOperation.job]) {
+                    itterations = itterations + 1;
                     nextOperation = operation;
                 }
             }
+
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
             for (Resource resource : resources) {
@@ -57,6 +61,7 @@ public class SPT implements Algorithm {
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
+
                     break;
                 }
             }
@@ -70,7 +75,7 @@ public class SPT implements Algorithm {
 
     @Override
     public int getItterations() {
-        return itterations;
+        return this.itterations;
     }
 
     @Override

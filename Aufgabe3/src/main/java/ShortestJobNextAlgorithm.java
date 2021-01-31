@@ -1,20 +1,16 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class EDD implements Algorithm, AlgorithmWeights {
+public class ShortestJobNextAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    double[] dueDate;
-    double[] weights;
-    double[] duDates;
     int itterations = 0;
 
-    public EDD(Data data, double[] weight) {
+    public ShortestJobNextAlgorithm(Data data) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
-        this.dueDate = weight;
     }
 
     @Override
@@ -29,16 +25,14 @@ public class EDD implements Algorithm, AlgorithmWeights {
                     operations.add(job.getNextOperation());
                 }
             }
-            //TODO EDD Sort
+            // getNextOperation (min duration)
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
-//                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
-                if (dueDate[operation.job] > dueDate[nextOperation.job]) {
-                    itterations = itterations + 1;
+                if (operation.duration < nextOperation.duration) {
+                    itterations= itterations+1;
                     nextOperation = operation;
                 }
             }
-
             // getResource from ResourceId
             Resource nextResource = resources.get(0);
             for (Resource resource : resources) {
@@ -63,7 +57,6 @@ public class EDD implements Algorithm, AlgorithmWeights {
             for (Job job : jobs) {
                 if (!job.ready()) {
                     ready = false;
-
                     break;
                 }
             }
@@ -77,26 +70,11 @@ public class EDD implements Algorithm, AlgorithmWeights {
 
     @Override
     public int getItterations() {
-        return this.itterations;
+        return itterations;
     }
 
     @Override
     public int getFinishTime() {
         return data.getFinishTime(this);
-    }
-
-    @Override
-    public double[] getWeights() {
-        return this.weights;
-    }
-
-    @Override
-    public double[] getDuDate() {
-        return this.duDates;
-    }
-
-    @Override
-    public Data getData() {
-        return this.data;
     }
 }

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Greedy implements Algorithm, AlgorithmWeights {
+public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
@@ -9,7 +9,7 @@ public class Greedy implements Algorithm, AlgorithmWeights {
     double[] duDates;
     int itterations = 0;
 
-    public Greedy(Data data, double[] weight) {
+    public GreedyAlgorithm(Data data, double[] weight) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;

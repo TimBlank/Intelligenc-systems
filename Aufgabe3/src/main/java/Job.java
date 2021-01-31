@@ -10,6 +10,13 @@ public class Job {
         this.resources = new ArrayList<>();
     }
 
+    public Job(Job job) {
+        this.id = job.id;
+        this.operations = new ArrayList<>();
+        job.operations.forEach(operation -> this.operations.add(new Operation(operation)));
+        this.resources = new ArrayList<>();
+    }
+
     void addResources(List<Resource> resources) {
         this.resources = resources;
     }

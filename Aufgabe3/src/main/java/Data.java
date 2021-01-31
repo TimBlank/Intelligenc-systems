@@ -1,11 +1,19 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Data {
     public List<Resource> resources;
     public List<Job> jobs;
 
-    public void work(String name) {
-        System.out.println(name + ":");
+    public Data(Data data) {
+        this.resources = new ArrayList<>();
+        data.resources.forEach(resource -> this.resources.add(new Resource(resource)));
+        this.jobs = new ArrayList<>();
+        data.jobs.forEach(job -> this.jobs.add(new Job(job)));
+    }
+
+    public void work(Class className) {
+        System.out.println(className + ":");
 
         for (Job job : this.jobs) {
             for (Operation operation : job.operations) {
@@ -40,13 +48,23 @@ public class Data {
 //            System.out.println(dueDate[i]);
         }
 
-        switch (name) {
-            case "Random" -> algorithm = new Randoms(this);
-            case "Greedy" -> algorithm = new Greedy(this, weights);
-            case "Shortest-Job-Next" -> algorithm = new SPT(this);
-            case "Earliest Due Date" -> algorithm = new EDD(this, weights);
-            case "Swarm Intelligence" -> algorithm = new swarmIntelligence(this);
-            default -> System.exit(0);
+        if (RandomAlgorithm.class.equals(className)) {
+            algorithm = new RandomAlgorithm(this);
+//            case "Random" -> algorithm = new Randoms(this);
+        } else if (GreedyAlgorithm.class.equals(className)) {
+            algorithm = new GreedyAlgorithm(this, weights);
+//            case "Greedy" -> algorithm = new Greedy(this, weights);
+        } else if (ShortestJobNextAlgorithm.class.equals(className)) {
+            algorithm = new ShortestJobNextAlgorithm(this);
+//            case "Shortest-Job-Next" -> algorithm = new SPT(this);
+        } else if (EarliestDueDateAlgorithm.class.equals(className)) {
+            algorithm = new EarliestDueDateAlgorithm(this, weights);
+//            case "Earliest Due Date" -> algorithm = new EDD(this, weights);
+        } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
+            algorithm = new SwarmIntelligenceAlgorithm(this);
+//            case "Swarm Intelligence" -> algorithm = new swarmIntelligence(this);
+        } else {
+            System.exit(0);
         }
         algorithm.calculate();
 

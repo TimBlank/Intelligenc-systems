@@ -16,6 +16,14 @@ public class Operation {
         this.duration = duration;
     }
 
+    public Operation(Operation operation) {
+        this.index = operation.index;
+        this.duration = operation.duration;
+        this.resource = operation.resource;
+        this.job = operation.job;
+        this.startTime = -1;
+    }
+
     public void setStartTime(int startTime) {
 //        System.out.println("setStartTime()1: " + startTime + " " + toString());
         this.startTime = startTime;

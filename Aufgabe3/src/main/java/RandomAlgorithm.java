@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Randoms implements Algorithm {
+public class RandomAlgorithm implements Algorithm {
     Data data;
     List<Resource> resources;
     List<Job> jobs;
-    int itterations=0;
+    int itterations = 0;
 
-    public Randoms(Data data) {
+    public RandomAlgorithm(Data data) {
         this.data = data;
         this.resources = data.resources;
         this.jobs = data.jobs;
