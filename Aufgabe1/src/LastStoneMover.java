@@ -2,6 +2,9 @@ package src;
 
 import java.util.List;
 
+/**
+ * This clown moves the figure that has moved the least amount. Ideally, it would move all figures evenly.
+ */
 public class LastStoneMover extends Player {
     public LastStoneMover(String color, String name, int order) {
         super(color, name, order);

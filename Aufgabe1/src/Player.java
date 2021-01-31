@@ -16,7 +16,8 @@ public class Player implements Steppable {
      */
     public List<Field> goals = new ArrayList<>();
     /**
-     * These are the fields on this player side or ?
+     * These are the fields on this player side
+     * In a 4 player game, you "own" a quadrant
      */
     public List<Field> fields = new ArrayList<>();
 
@@ -51,6 +52,14 @@ public class Player implements Steppable {
         return board.toString();
     }
 
+    /**
+     * Does everything for the player automatically.
+     * Rolls, checks rules for needed actions/permissions, makes a list of possible actions.
+     * Hands that List with Fields that have a figure on it to "chooseMove"
+     * Takes its return and does that action.
+     * Also checks if player has won or reschedules if needed
+     * @param state
+     */
     @Override
     public void step(SimState state) {
         //A Player who has Won doesn't get to play anymore FeelsBadMan
@@ -149,79 +158,17 @@ public class Player implements Steppable {
 
     }
 
+    /**
+     * This Method chooses everything an agent can choose
+     * During it's move, this method gets the list of all possible moves.
+     * Children of Player can easily overwrite this method to choose their move according to strategy
+     * @param roll
+     * @param possibleMoves
+     * @param game
+     * @return
+     */
     public Field chooseMove(int roll, List<Field> possibleMoves, Game game) {
         return possibleMoves.get(game.random.nextInt(possibleMoves.size()));
-    }
-
-    private HashMap<Field, Integer> multiplyStrength(HashMap<Field, Integer> moveStrength) {
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            entry.setValue(entry.getValue() * 2);
-        }
-        return moveStrength;
-    }
-
-    private HashMap<Field, Integer> agressiveMove(Game game, HashMap<Field, Integer> moveStrength, int roll) {
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            int furtherPlayers = 0;
-            for (int i = 1; i <= 6; i++) {
-                Field furtherField = entry.getKey().getNFurtherField(roll + i, this);
-                if (furtherField != null && furtherField.occupation != null && furtherField.occupation != this) {
-                    furtherPlayers++;
-                }
-            }
-//            if (furtherPlayers>1) {
-//                System.out.println("furtherPlayers: " + furtherPlayers + " Field: " + entry.getKey() + " distance: " + entry.getKey().getDistanceToGoal(this));
-//                System.out.print("");
-//            }
-            entry.setValue(entry.getValue() + furtherPlayers);
-        }
-        return moveStrength;
-    }
-
-    private HashMap<Field, Integer> defensiveMove(Game game, HashMap<Field, Integer> moveStrength, int roll) {
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            int formerPlayers = 0;
-            for (int i = 1; i <= 6; i++) {
-                Player occupation = entry.getKey().getNFurtherField(roll - i, this).occupation;
-                if (occupation != null && occupation != this) {
-                    formerPlayers++;
-                }
-            }
-            entry.setValue(entry.getValue() + 6 - formerPlayers);
-        }
-        return moveStrength;
-    }
-
-    private HashMap<Field, Integer> worstStoneMove(HashMap<Field, Integer> moveStrength) {
-//        if (moveStrength.size()>1){
-//            System.out.println(moveStrength);
-//        }
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
-            // TODO: Division mit mehr als zwei?
-            entry.setValue(entry.getValue() + distanceToGoal / 2);
-        }
-//        if (moveStrength.size()>1){
-//            System.out.println(moveStrength);
-//            System.out.print("");
-//        }
-        return moveStrength;
-    }
-
-    private HashMap<Field, Integer> bestStoneMove(Game game, HashMap<Field, Integer> moveStrength) {
-//        if (moveStrength.size()>1){
-//            System.out.println(moveStrength);
-//        }
-        for (Map.Entry<Field, Integer> entry : moveStrength.entrySet()) {
-            int distanceToGoal = entry.getKey().getDistanceToGoal(this);
-            // TODO: Division mit mehr als zwei?
-            entry.setValue(entry.getValue() + (Game.DISTANCE * game.players.length - distanceToGoal) / 2);
-        }
-//        if (moveStrength.size()>1){
-//            System.out.println(moveStrength);
-//            System.out.print("");
-//        }
-        return moveStrength;
     }
 
     @Override

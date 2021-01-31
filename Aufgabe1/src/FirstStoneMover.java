@@ -2,6 +2,10 @@ package src;
 
 import java.util.List;
 
+/**
+ * This chad moves the figure that has moved the most and is nearest to the goal. Ideally he brings each figure into the
+ * goal one after the other fully.
+ */
 public class FirstStoneMover extends  Player{
     public FirstStoneMover(String color, String name, int order) {
         super(color, name, order);

@@ -4,6 +4,9 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Holds statistical data about the past games
+ */
 public class Statistics {
 
     ArrayList<HashMap<Player, Integer>> rankings = new ArrayList<>();

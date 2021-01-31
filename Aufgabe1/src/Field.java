@@ -1,13 +1,18 @@
 package src;
 
+/**
+ * Represents a field on the Board
+ */
 public class Field {
     public int fieldId;
+    // Double links
     public Field nextField;
     public Field formerField;
+    // If this field is a special thing, house Exit or such
     public Speciality speciality = null;
-    // Jedes Spezielle Feld hat nur einen
+    // Every speciality refers to a player
     public Player specialPlayer = null;
-    // if(goal != null) dann specialPlayer == actualPlayer testen
+    // This is a link to the first goal field, should this field lead into a goal
     public Field goal = null;
 
     //Actual player who has his shit on this field
@@ -69,6 +74,12 @@ public class Field {
 //        return getColor() + "_" + Game.ANSI_RESET;
     }
 
+    /**
+     * Returns the field that you'd end up at if you rolled a "n" from this field
+     * @param n
+     * @param player
+     * @return
+     */
     public Field getNFurtherField(int n, Player player) {
         Field field = this;
         if (n > 0) {
@@ -92,6 +103,11 @@ public class Field {
         return field;
     }
 
+    /**
+     * Returns what you'd need to roll to enter your first goal field
+     * @param player
+     * @return
+     */
     public int getDistanceToGoal(Player player) {
         if (speciality == Speciality.GOAL_FIELD) {
             return 0;

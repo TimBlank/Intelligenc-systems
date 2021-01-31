@@ -6,14 +6,19 @@ import java.util.*;
 import sim.engine.SimState;
 import sim.engine.Steppable;
 
+/**
+ * State of the Game.
+ * main handles setup and replay things
+ */
 public class Game extends SimState {
 
-    //Someones House exit
+    //Got to start a double linked list (which is a ring) somewhere
     public Field playingFieldStart;
 
     //Convenience Set of all Fields
     public Set<Field> setOfAllFields = new HashSet<>();
 
+    //Was used to give players colored figures and display the actual game running
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -37,15 +42,22 @@ public class Game extends SimState {
     /**
      * Schlagzwang?
      */
-    public static final boolean MUST_KILL = false;
+    public static final boolean MUST_KILL = true;
 
+    /**
+     * The list of Players playing each game. This doesn't change, but could be made to change when setting up
+     * each game if wanted. (Between new Game and game.start)
+     */
     public Player[] players = {
             new LastStoneMover(ANSI_RED_BACKGROUND, "LastStoneFirst", 1),
             new Player(ANSI_YELLOW_BACKGROUND, "Random", 2),
-            new Player(ANSI_BLUE_BACKGROUND, "Random", 3),
+            new Player(ANSI_BLUE_BACKGROUND, "Random2", 3),
             new FirstStoneMover(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4)
     };
 
+    /**
+     * Ordered List of winners. First in list finished first.
+     */
     List<Player> winners = new ArrayList<>();
 
     public Game(long seed) {
@@ -56,12 +68,14 @@ public class Game extends SimState {
         super.start();
         setupPlayingField(DISTANCE, STONES);
 
+        //Put each player into a queue to do a turn once
         for (int i = 0; i < players.length; i++) {
             schedule.scheduleOnce(players[i], i + 1);
         }
+        // This is just a step that happens after all players did things.
+        // For debugging, but unused now
         schedule.scheduleOnce(new Steppable() {
             public void step(SimState state) {
-//                System.out.println(((Game) state).getBoard());
                 if (winners.size() == 0) {
                     schedule.scheduleOnce(this, players.length);
                 }
@@ -72,24 +86,27 @@ public class Game extends SimState {
     public static void main(String[] args) {
 
         /**
-         * How many runs you want of this configuration
+         * How many runs you want
          */
-        int amountOfRuns = 10000;
+        int amountOfRuns = 100000;
         Statistics statistics = new Statistics();
-
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+        System.out.println("I'm not dead, I'm just doing things.");
+        for (int i = 0; i < amountOfRuns; i++) {
 //        for (int i = 0; i < amountOfRuns; i++) {
             if (i>0 && i % 1000 == 0) {
                 System.out.println(statistics);
             }
+            //Start 1 new game, run it until it terminates, add it's stats, quit
             Game game = new Game(System.currentTimeMillis());
             game.start();
             while (true) {
                 if (!game.schedule.step(game) || game.schedule.getSteps() > 250_000) break;
             }
             game.finish(statistics);
+
         }
         System.out.println(statistics.rankings.size() + " games were played");
+        //Print some stats
         int amountOfFinishers = 0;
         for (HashMap<Player, Integer> game : statistics.rankings) {
             amountOfFinishers += game.size();
@@ -108,6 +125,11 @@ public class Game extends SimState {
         this.finish();
     }
 
+    /**
+     * Sets up the double linked ring of fields, complete with markers for house exists, goal entries and goals
+     * @param distance
+     * @param playerStones
+     */
     public void setupPlayingField(int distance, int playerStones) {
         Field lastField = null;
         for (int playerId = 0; playerId < this.players.length; playerId++) {
@@ -151,11 +173,6 @@ public class Game extends SimState {
             }
             actualField = actualField.nextField;
         }
-        //System.out.println(this.getBoard());
-        //this.play();
-        for (Field f : setOfAllFields) {
-            // System.out.println("Field " + f.fieldId + " is " + f.specialPlayer + "'s " + f.speciality);
-        }
     }
 
     /**
@@ -175,7 +192,7 @@ public class Game extends SimState {
     }
 
     /**
-     * Finds Players House exit
+     * Finds a Players House exit
      *
      * @param player
      * @return
@@ -191,7 +208,6 @@ public class Game extends SimState {
 
     /**
      * Moves a stone forward by roll
-     * Should maybe check rules too in the future
      * Returns true when moved successfully
      *
      * @param roll
@@ -229,7 +245,9 @@ public class Game extends SimState {
     }
 
     /**
-     * Removes stones that are as far as they can go
+     * Removes stones that are as far as they can go from supplied list
+     * Mainly for finding out that a player has put all stones on the field as far up their goal as they can for rolling
+     * 3 times when getting another one out of the house
      *
      * @param player
      * @param fields
@@ -250,7 +268,7 @@ public class Game extends SimState {
     /**
      * Gives you a list of Stones, ORDERED by how far they've come from your house exit
      * The larger the index, the farther the Stone has travelled
-     *
+     * Foor strategies by players that care about such things.
      * @param player
      * @return
      */
