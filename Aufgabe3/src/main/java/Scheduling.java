@@ -16,21 +16,35 @@ public class Scheduling {
          */
         File[] files;
         files = new File(".\\Aufgabe3\\src\\main\\resources").listFiles();
+        int fileLength;
         String Dateiname;
-//        for (int i=0; i< files.length;i++) {
-//            Dateiname = files[i].getName();
-//            System.out.println("Nummer:"+i+ " | "+Dateiname);
-//        }
-//        System.out.println(json);
+
+        int ShortItts = 0;
+        int ShortJobtime = 0;
+        int Shorttime = 0;
+
+        int randomItts = 0;
+        int randomJobtime = 0;
+        int randomtime = 0;
+
+        int eddItts = 0;
+        int eddJobtime = 0;
+        int eddtime = 0;
+
+        int greedyItts = 0;
+        int greedyJobtime = 0;
+        int greedytime = 0;
+
+        int swarmItts = 0;
+        int swarmJobtime = 0;
+        int swarmtime = 0;
 
         /*
          * Führt, für alle Dateien aus der Liste, die Sortierungen aus
          * i von 0 bis 80
          */
-        long timeStart;
-        long timeEnd;
-        for (int i = 0; i < files.length; i++) {
-//        for (int i = 0; i < 1; i++) {
+        fileLength = files.length;
+        for (int i = 0; i < fileLength; i++) {
             Dateiname = files[i].getName();
             System.out.println("----------------------------------------------------------------------------------");
             System.out.println("Nummer:" + i + " | " + Dateiname);
@@ -38,21 +52,26 @@ public class Scheduling {
             String json = readFromInputStream(is);
             Data data = gson.fromJson(json, Data.class);
 
-            //System.out.println(data.toString());
-
-            /* Random
-             * Es wird zuffälig zwischen den möglichen
-             * Jobs einer in reihenfolge ausgewählt
-             */
-            data = gson.fromJson(json, Data.class);
-            data.work(RandomAlgorithm.class);
-
             /* Shortest-Job-Next
              * Es wird in Reihenfolge immer die
              * kürzeste Operation ausgewählt
              */
             data = gson.fromJson(json, Data.class);
             data.work(ShortestJobNextAlgorithm.class);
+            ShortItts += data.itterations;
+            ShortJobtime += data.finishTime;
+            Shorttime += data.time;
+
+            /* Random
+             * Es wird zuffällig zwischen den möglichen
+             * Jobs einer, in reihenfolge ausgewählt
+             */
+            data = gson.fromJson(json, Data.class);
+            data.work(RandomAlgorithm.class);
+            randomItts += data.itterations;
+            randomJobtime += data.finishTime;
+            randomtime += data.time;
+
 
             /* Earliest Due Date
              * Da kein Due Date für die Jobs mit gegeben wurde
@@ -61,14 +80,18 @@ public class Scheduling {
              */
             data = gson.fromJson(json, Data.class);
             data.work(EarliestDueDateAlgorithm.class);
-            System.out.println(data.toString());
+            eddItts += data.itterations;
+            eddJobtime += data.finishTime;
+            eddtime += data.time;
 
             /* Greedy
              * (longest Operation next)
              */
             data = gson.fromJson(json, Data.class);
             data.work(GreedyAlgorithm.class);
-            System.out.println(data.toString());
+            greedyItts += data.itterations;
+            greedyJobtime += data.finishTime;
+            greedytime += data.time;
 
             /* Swarm Intelligence
              * Erstellt Greedys mit
@@ -77,10 +100,42 @@ public class Scheduling {
              */
             data = gson.fromJson(json, Data.class);
             data.work(SwarmIntelligenceAlgorithm.class);
-            System.out.println(data.toString());
+            swarmItts += data.itterations;
+            swarmJobtime += data.finishTime;
+            swarmtime += data.time;
         }
-//        System.out.println(greedy.getResources());
 
+        ShortItts = ShortItts / fileLength;
+        ShortJobtime = ShortJobtime / fileLength;
+        Shorttime = Shorttime / fileLength;
+
+        randomItts = randomItts / fileLength;
+        randomJobtime = randomJobtime / fileLength;
+        randomtime = randomtime / fileLength;
+
+        eddItts = eddItts / fileLength;
+        eddJobtime = eddJobtime / fileLength;
+        eddtime = eddtime / fileLength;
+
+        greedyItts = greedyItts / fileLength;
+        greedyJobtime = greedyJobtime / fileLength;
+        greedytime = greedytime / fileLength;
+
+        swarmItts = swarmItts / fileLength;
+        swarmJobtime = swarmJobtime / fileLength;
+        swarmtime = swarmtime / fileLength;
+
+        System.out.println("--------------------------ERGEBNIS---------------------------------:");
+        System.out.println("Shortest-Job-Next:");
+        System.out.println("Ende der letzten operation: " + ShortJobtime + " | Anzahl Itterationen: " + ShortItts + " | Laufzeit:" + Shorttime + " qs");
+        System.out.println("Random:");
+        System.out.println("Ende der letzten operation: " + randomJobtime + " | Anzahl Itterationen: " + randomItts + " | Laufzeit:" + randomtime + " qs");
+        System.out.println("Earliest Due Date:");
+        System.out.println("Ende der letzten operation: " + eddJobtime + " | Anzahl Itterationen: " + eddItts + " | Laufzeit: " + eddtime + " qs");
+        System.out.println("Greedy:");
+        System.out.println("Ende der letzten operation: " + greedyJobtime + " | Anzahl Itterationen: " + greedyItts + " | Laufzeit: " + greedytime + " qs");
+        System.out.println("Swarm Intelligence:");
+        System.out.println("Ende der letzten operation: " + swarmJobtime + " | Anzahl Itterationen: " + swarmItts + " | Laufzeit: " + swarmtime + " qs");
     }
 
     private static String readFromInputStream(InputStream inputStream)
@@ -95,4 +150,6 @@ public class Scheduling {
         }
         return resultStringBuilder.toString();
     }
+
+
 }

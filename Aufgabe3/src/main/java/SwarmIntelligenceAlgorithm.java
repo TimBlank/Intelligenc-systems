@@ -12,15 +12,10 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
         this.data = data;
     }
 
-
     private int swarmSize = 10; // Should be between 10-50
-
     private int neighbourhoodSize = 5; // Should be either 3 or 5
-    //    private double importanceOfPersonalBest = 2;      // C1
-//    private double importanceOfNeighbourhoodBest = 2; // C2
-    public static final double maxVelocity = 0.05;
-
     private int globalBestValue = Integer.MAX_VALUE;
+    private int swarmWalk = 5; //Should be between 5-20
 
     @Override
     public void calculate() {
@@ -28,6 +23,7 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
         /*
          * create inital Swarm
          */
+//        System.out.println("itte: "+itterations);
         for (int i = 0; i < swarmSize; i++) {
             double[] weights = new double[data.jobs.size()];
             /*
@@ -35,21 +31,20 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
              */
             for (int j = 0; j < weights.length; j++) {
                 weights[j] = Math.random();
-//                System.out.println(weights[j]);
             }
-//            System.out.println(weights[0]);
             GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(new Data(data), weights);
             greedyAlgorithm.calculate();
-//            for (Resource resource : greedyAlgorithm.getResources()) {
-//                System.out.println(resource);
-//            }
+            itterations += greedyAlgorithm.getItterations();
+//            System.out.println("itte: "+itterations);
             swarm.add(greedyAlgorithm);
         }
+        itterations = itterations / swarmSize;
+//        System.out.println("itte: "+itterations);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < swarmWalk; i++) {
 //          Die schnellsten zuerst
             swarm.sort((Comparator.comparingInt(Algorithm::getFinishTime)));
-            System.out.println(i + ". BestFinishTime: " + swarm.get(0).getFinishTime());
+//            System.out.println(i + ". BestFinishTime: " + swarm.get(0).getFinishTime());
 //          auf swarmSize kürzen
             while (swarm.size() > swarmSize) {
                 swarm.remove(swarm.size() - 1);
@@ -59,27 +54,22 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
                 double[] weights = getNewWeights(swarm.get(j).getWeights(), i);
                 GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(new Data(data), weights);
                 greedyAlgorithm.calculate();
+                itterations += greedyAlgorithm.getItterations();
+//                System.out.println("itte: "+itterations);
                 swarm.add(greedyAlgorithm);
             }
+            itterations = itterations / neighbourhoodSize;
+//            System.out.println("itte: "+itterations);
         }
+
         swarm.sort((Comparator.comparingInt(Algorithm::getFinishTime)));
         this.data = swarm.get(0).getData();
     }
 
     private double[] getNewWeights(double[] weights, double oldWeightsPower) {
-//        System.out.print("1: ");
-//        for(double weight : weights){
-//            System.out.print(weight + ",");
-//        }
-//        System.out.println();
         for (int i = 0; i < weights.length; i++) {
             weights[i] = (weights[i] * oldWeightsPower + Math.random()) / (oldWeightsPower + 1);
         }
-//        System.out.print("2: ");
-//        for(double weight : weights){
-//            System.out.print(weight + ",");
-//        }
-//        System.out.println();
         return weights;
     }
 

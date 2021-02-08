@@ -4,6 +4,10 @@ import java.util.List;
 public class Data {
     public List<Resource> resources;
     public List<Job> jobs;
+    public long time;
+    public int minTime;
+    public int finishTime;
+    public int itterations;
 
     public Data(Data data) {
         this.resources = new ArrayList<>();
@@ -13,6 +17,11 @@ public class Data {
     }
 
     public void work(Class className) {
+        int duDateDelay = 100;
+        long timeStart;
+        long timeEnd;
+        Algorithm algorithm = null;
+
         System.out.println(className + ":");
 
         for (Job job : this.jobs) {
@@ -20,63 +29,77 @@ public class Data {
                 operation.job = job.id;
             }
         }
-        long timeStart = System.nanoTime();
-        Algorithm algorithm = null;
-
-        double[] weights = new double[this.jobs.size()];
-        /*
-         * create inital weights
-         */
-        for (int i = 0; i < weights.length; i++) {
-            weights[i] = Math.random();
-//            System.out.println(weights[i]);
-        }
-        double[] dueDate = new double[this.jobs.size()];
-        /*
-         * create inital do Date
-         */
-        int duDateDelay = 100;
-        for (int i = 0; i < dueDate.length; i++) {
-
-            dueDate[i] = Math.floor(Math.random() * Math.floor(duDateDelay));
-//            System.out.println(dueDate[i]);
-        }
-        for (int i = 0; i < jobs.size(); i++) {
-            Job job = jobs.get(i);
-            dueDate[i] = dueDate[i] + job.getminTime();
-//            System.out.println(job.getminTime());
-//            System.out.println(dueDate[i]);
-        }
+        timeStart = System.nanoTime();
+        minTime = this.getminTime();
 
         if (RandomAlgorithm.class.equals(className)) {
             algorithm = new RandomAlgorithm(this);
-//            case "Random" -> algorithm = new Randoms(this);
+            /*
+
+             */
         } else if (GreedyAlgorithm.class.equals(className)) {
+            double[] weights = new double[this.jobs.size()];
+            /*
+             * create inital weights
+             */
+            for (int i = 0; i < weights.length; i++) {
+                weights[i] = Math.random();
+//            System.out.println(weights[i]);
+            }
             algorithm = new GreedyAlgorithm(this, weights);
-//            case "Greedy" -> algorithm = new Greedy(this, weights);
+            /*
+
+             */
         } else if (ShortestJobNextAlgorithm.class.equals(className)) {
             algorithm = new ShortestJobNextAlgorithm(this);
-//            case "Shortest-Job-Next" -> algorithm = new SPT(this);
+            /*
+
+             */
         } else if (EarliestDueDateAlgorithm.class.equals(className)) {
-            algorithm = new EarliestDueDateAlgorithm(this, weights);
-//            case "Earliest Due Date" -> algorithm = new EDD(this, weights);
+            double[] dueDate = new double[this.jobs.size()];
+            /*
+             * create inital do Date
+             */
+            for (int i = 0; i < dueDate.length; i++) {
+                /*
+
+                 */
+                dueDate[i] = Math.floor(Math.random() * Math.floor(duDateDelay));
+//            System.out.println(dueDate[i]);
+            }
+            for (int i = 0; i < jobs.size(); i++) {
+                Job job = jobs.get(i);
+                dueDate[i] = dueDate[i] + job.getminTime();
+//            System.out.println(job.getminTime());
+//            System.out.println(dueDate[i]);
+            }
+            algorithm = new EarliestDueDateAlgorithm(this, dueDate);
+
+            /*
+            Erstellt einen Swarm
+             */
         } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
             algorithm = new SwarmIntelligenceAlgorithm(this);
-//            case "Swarm Intelligence" -> algorithm = new swarmIntelligence(this);
+
         } else {
             System.exit(0);
         }
         algorithm.calculate();
 
-//        Zeigt alle Operatioen der Einzelnen Resourcen mit anfangs und endzeit sowie Job zugehörigkeit an
-        for (Resource resource : algorithm.getResources()) {
+        /*
+            Zeigt alle Operatioen der Einzelnen Resourcen mit anfangs und endzeit sowie Job zugehörigkeit an
+         */
+//        for (Resource resource : algorithm.getResources()) {
 //            System.out.println(resource);
-        }
+//        }
 
-        long timeEnd = System.nanoTime();
+        timeEnd = System.nanoTime();
+        time = (timeEnd - timeStart) / 1000;
+        finishTime = getFinishTime(algorithm);
+        itterations = algorithm.getItterations();
 
-        System.out.println("Anzahl operationen: " + algorithm.getItterations() + " |  Ende der letzten operation: " + getFinishTime(algorithm));
-        System.out.println("Laufzeit: " + (timeEnd - timeStart) + " Ns" + " | minimale Jobzeit: " + this.getminTime());
+        System.out.println("  Ende der letzten operation: " + finishTime + "| Laufzeit: " + time + " qs");
+        System.out.println("Anzahl Itterationen: " + itterations + " | Minimale Jobzeit: " + minTime);
     }
 
     int getminTime() {
