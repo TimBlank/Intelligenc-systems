@@ -42,7 +42,7 @@ public class Game extends SimState {
     /**
      * Schlagzwang?
      */
-    public static final boolean MUST_KILL = true;
+    public static final boolean MUST_KILL = false;
 
     /**
      * The list of Players playing each game. This doesn't change, but could be made to change when setting up
@@ -50,8 +50,11 @@ public class Game extends SimState {
      */
     public Player[] players = {
             new LastStoneMover(ANSI_RED_BACKGROUND, "LastStoneFirst", 1),
-            new Player(ANSI_YELLOW_BACKGROUND, "Random", 2),
-            new Player(ANSI_BLUE_BACKGROUND, "Random2", 3),
+            //new Player(ANSI_YELLOW_BACKGROUND, "Random", 2),
+            //new Player(ANSI_BLUE_BACKGROUND, "Random2", 3),
+            new LosesInstantly(ANSI_BLACK_BACKGROUND, "Quitter", 2),
+            new LosesInstantly(ANSI_BLACK_BACKGROUND, "Quitter", 3),
+
             new FirstStoneMover(ANSI_GREEN_BACKGROUND, "BestStoneFirst", 4)
     };
 
