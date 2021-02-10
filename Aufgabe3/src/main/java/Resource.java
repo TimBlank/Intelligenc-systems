@@ -54,11 +54,9 @@ public class Resource {
             if (starttime + duration <= operation.startTime) return starttime;
             starttime = operation.startTime + operation.duration;
         }
-        // TODO Error?
         return starttime;
     }
 
-    // TODO alle Operationen Printen
     @Override
     public String toString() {
         operations.sort(Comparator.comparingInt(o -> o.startTime));

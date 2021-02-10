@@ -27,7 +27,6 @@ public class EarliestDueDateAlgorithm implements Algorithm {
                     operations.add(job.getNextOperation());
                 }
             }
-            //TODO EDD Sort
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
 //                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);

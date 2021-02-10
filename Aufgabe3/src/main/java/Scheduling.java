@@ -77,7 +77,6 @@ public class Scheduling {
             randomJobtime += data.finishTime;
             randomtime += data.time;
 
-
             /* Earliest Due Date
              * Da kein Due Date für die Jobs mit gegeben wurde
              * wird der Gesamt Entzeitpunkt des Jobs
@@ -156,6 +155,4 @@ public class Scheduling {
         }
         return resultStringBuilder.toString();
     }
-
-
 }
