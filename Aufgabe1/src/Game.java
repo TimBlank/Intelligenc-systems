@@ -1,10 +1,10 @@
 package src;
 
 
-import java.util.*;
-
 import sim.engine.SimState;
 import sim.engine.Steppable;
+
+import java.util.*;
 
 public class Game extends SimState {
 
@@ -120,7 +120,6 @@ public class Game extends SimState {
             for (int i = 0; i < distance - 1; i++) {
                 field = new Field(lastField.fieldId + 1, this, lastField);
                 this.players[playerId].fields.add(field);
-                ;
                 lastField.setNextField(field);
                 field.setFormerField(lastField);
                 lastField = field;
@@ -216,9 +215,7 @@ public class Game extends SimState {
      */
     public boolean validMove(int roll, Field stone, Player player) {
         if (stone.getNFurtherField(roll, player) != null) {
-            if (stone.getNFurtherField(roll, player).occupation != player) {
-                return true;
-            }
+            return stone.getNFurtherField(roll, player).occupation != player;
         }
 
         return false;
@@ -233,7 +230,7 @@ public class Game extends SimState {
     public List<Field> removeDoneStones(Player player, List<Field> fields) {
         for (int i = player.goals.size() - 1; i > -1; i--) {
             if (player.goals.get(i).occupation == player) {
-                fields.remove(fields.indexOf(player.goals.get(i)));
+                fields.remove(player.goals.get(i));
             } else {
                 //Once there is an empty field, everything behind isn't done yet
                 break;

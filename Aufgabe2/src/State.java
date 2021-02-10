@@ -74,10 +74,7 @@ public class State {
         if(y > 0 && isConfirmed(x, y-1)) {
             return true;
         }
-        if(y+1 < field.get(x).size() && isConfirmed(x, y+1)) {
-            return true;
-        }
-        return false;
+        return y + 1 < field.get(x).size() && isConfirmed(x, y + 1);
     }
 
 

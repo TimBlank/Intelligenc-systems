@@ -12,10 +12,10 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
         this.data = data;
     }
 
-    private int swarmSize = 10; // Should be between 10-50
-    private int neighbourhoodSize = 5; // Should be either 3 or 5
-    private int globalBestValue = Integer.MAX_VALUE;
-    private int swarmWalk = 5; //Should be between 5-20
+    private final int swarmSize = 10; // Should be between 10-50
+    private final int neighbourhoodSize = 5; // Should be either 3 or 5
+    private final int globalBestValue = Integer.MAX_VALUE;
+    private final int swarmWalk = 5; //Should be between 5-20
 
     @Override
     public void calculate() {
