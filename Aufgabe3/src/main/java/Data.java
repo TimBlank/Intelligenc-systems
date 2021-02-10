@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Aus den Dateien wird ein Data-Objekt erzeugt, dass dann mit den verschiedenen Algorithmen bearbeitet werden kann
+ * Dafür werden die gegeben resources & jobs gespeichert und weitere Werte gespeichert, um diese Werte für die
+ * Konsolenausgabe bereit zu legen.
+ */
 public class Data {
     public List<Resource> resources;
     public List<Job> jobs;
@@ -9,6 +14,11 @@ public class Data {
     public int finishTime;
     public int itterations;
 
+    /**
+     * Kopie erstellen
+     *
+     * @param data
+     */
     public Data(Data data) {
         this.resources = new ArrayList<>();
         data.resources.forEach(resource -> this.resources.add(new Resource(resource)));
@@ -16,6 +26,11 @@ public class Data {
         data.jobs.forEach(job -> this.jobs.add(new Job(job)));
     }
 
+    /**
+     * Diese Methode ruft die Ausführung der Data mit einem ausgewählen Algorithmus auf
+     *
+     * @param className Algorithmus Klasse
+     */
     public void work(Class className) {
         int duDateDelay = 100;
         long timeStart;
@@ -32,38 +47,17 @@ public class Data {
         timeStart = System.nanoTime();
         minTime = this.getminTime();
 
+        /* Je nachdem welcher Algorithmus gewählt ist wird das algorithm-Objekt erstellt */
         if (RandomAlgorithm.class.equals(className)) {
             algorithm = new RandomAlgorithm(this);
-            /*
-
-             */
-        } else if (GreedyAlgorithm.class.equals(className)) {
-            double[] weights = new double[this.jobs.size()];
-            /*
-             * create inital weights
-             */
-            for (int i = 0; i < weights.length; i++) {
-                weights[i] = Math.random();
-//            System.out.println(weights[i]);
-            }
-            algorithm = new GreedyAlgorithm(this, weights);
-            /*
-
-             */
         } else if (ShortestJobNextAlgorithm.class.equals(className)) {
             algorithm = new ShortestJobNextAlgorithm(this);
-            /*
-
-             */
+        } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
+            algorithm = new SwarmIntelligenceAlgorithm(this);
         } else if (EarliestDueDateAlgorithm.class.equals(className)) {
+            /* In EarliestDueDateAlgorithm wird eine dueDate benötigt, diese wird zu nächst zufällig erstellt */
             double[] dueDate = new double[this.jobs.size()];
-            /*
-             * create inital do Date
-             */
             for (int i = 0; i < dueDate.length; i++) {
-                /*
-
-                 */
                 dueDate[i] = Math.floor(Math.random() * Math.floor(duDateDelay));
 //            System.out.println(dueDate[i]);
             }
@@ -74,21 +68,23 @@ public class Data {
 //            System.out.println(dueDate[i]);
             }
             algorithm = new EarliestDueDateAlgorithm(this, dueDate);
-
-            /*
-            Erstellt einen Swarm
-             */
-        } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
-            algorithm = new SwarmIntelligenceAlgorithm(this);
-
+        } else if (GreedyAlgorithm.class.equals(className)) {
+            /* Erstellt einen Swarm */
+            double[] weights = new double[this.jobs.size()];
+            /* create inital weights */
+            for (int i = 0; i < weights.length; i++) {
+                weights[i] = Math.random();
+//            System.out.println(weights[i]);
+            }
+            algorithm = new GreedyAlgorithm(this, weights);
         } else {
+            /* Sollte die Klasse kein hier aufgenommenen Algorithmus beinhalten wird die Ausführung beendet */
             System.exit(0);
         }
+        /* Der gewählte Algorithmus wird nun berechnet */
         algorithm.calculate();
 
-        /*
-            Zeigt alle Operatioen der Einzelnen Resourcen mit anfangs und endzeit sowie Job zugehörigkeit an
-         */
+        /* Zeigt alle Operatioen der Einzelnen Resourcen mit anfangs und endzeit sowie Job zugehörigkeit an */
 //        for (Resource resource : algorithm.getResources()) {
 //            System.out.println(resource);
 //        }

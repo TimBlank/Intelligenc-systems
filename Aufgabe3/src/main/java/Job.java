@@ -10,6 +10,11 @@ public class Job {
         this.resources = new ArrayList<>();
     }
 
+    /**
+     * Kopie erstellen
+     *
+     * @param job
+     */
     public Job(Job job) {
         this.id = job.id;
         this.operations = new ArrayList<>();
@@ -21,6 +26,9 @@ public class Job {
         this.resources = resources;
     }
 
+    /**
+     * @return nächste noch nicht ausgeführte Operation
+     */
     Operation getNextOperation() {
         for (Operation operation : operations) {
             if (operation.startTime < 0) {
@@ -37,6 +45,9 @@ public class Job {
         return null;
     }
 
+    /**
+     * @return Zeitpunkt der letzten schon gestarteten Operation
+     */
     int lastOperationEnd() {
         int lastOperationEnd = 0;
         for (Operation operation : operations) {
@@ -47,6 +58,9 @@ public class Job {
         return lastOperationEnd;
     }
 
+    /**
+     * @return Ob alle Operationen gestartet wurden
+     */
     boolean ready() {
         for (Operation operation : operations) {
             if (operation.startTime == -1) {

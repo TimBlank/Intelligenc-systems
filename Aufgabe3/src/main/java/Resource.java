@@ -10,6 +10,12 @@ public class Resource {
         this.operations = new ArrayList<>();
     }
 
+
+    /**
+     * Kopie erstellen
+     *
+     * @param resource
+     */
     public Resource(Resource resource) {
         this.id = resource.id;
         this.operations = new ArrayList<>();

@@ -16,6 +16,11 @@ public class Operation {
         this.duration = duration;
     }
 
+    /**
+     * Kopie erstellen
+     *
+     * @param operation
+     */
     public Operation(Operation operation) {
         this.index = operation.index;
         this.duration = operation.duration;
@@ -25,9 +30,7 @@ public class Operation {
     }
 
     public void setStartTime(int startTime) {
-//        System.out.println("setStartTime()1: " + startTime + " " + toString());
         this.startTime = startTime;
-//        System.out.println("setStartTime()2: " + startTime + " " + toString());
     }
 
     @Override

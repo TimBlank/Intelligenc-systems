@@ -3,7 +3,12 @@ import com.google.gson.Gson;
 import java.io.*;
 
 public class Scheduling {
-
+    /**
+     * Die verschiedenen Algorithmen werden gestartet und die Ergebnisse am Ende verglichen
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
 //        InputStream is = Scheduling.class.getClassLoader().getResourceAsStream("swv20_50_jobs_10_resources.json");
@@ -11,13 +16,13 @@ public class Scheduling {
 //        String json = readFromInputStream(is);
 //        Data data = gson.fromJson(json, Data.class);
 
-        /**
-         * Speichert alle Datei namen aus Ressource in eine Liste
+        /*
+         * Speichert alle Dateinamen aus Ressource in eine Liste
          */
         File[] files;
         files = new File(".\\Aufgabe3\\src\\main\\resources").listFiles();
         int fileLength;
-        String Dateiname;
+        String filename;
 
         int ShortItts = 0;
         int ShortJobtime = 0;
@@ -45,10 +50,10 @@ public class Scheduling {
          */
         fileLength = files.length;
         for (int i = 0; i < fileLength; i++) {
-            Dateiname = files[i].getName();
+            filename = files[i].getName();
             System.out.println("----------------------------------------------------------------------------------");
-            System.out.println("Nummer:" + i + " | " + Dateiname);
-            InputStream is = Scheduling.class.getClassLoader().getResourceAsStream(Dateiname);
+            System.out.println("Nummer:" + i + " | " + filename);
+            InputStream is = Scheduling.class.getClassLoader().getResourceAsStream(filename);
             String json = readFromInputStream(is);
             Data data = gson.fromJson(json, Data.class);
 
@@ -63,7 +68,7 @@ public class Scheduling {
             Shorttime += data.time;
 
             /* Random
-             * Es wird zuffällig zwischen den möglichen
+             * Es wird zufällig zwischen den möglichen
              * Jobs einer, in reihenfolge ausgewählt
              */
             data = gson.fromJson(json, Data.class);
@@ -105,6 +110,7 @@ public class Scheduling {
             swarmtime += data.time;
         }
 
+        /* Durchschnittswerte für das Ergebnis berechnen */
         ShortItts = ShortItts / fileLength;
         ShortJobtime = ShortJobtime / fileLength;
         Shorttime = Shorttime / fileLength;

@@ -20,15 +20,11 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
     @Override
     public void calculate() {
         List<GreedyAlgorithm> swarm = new ArrayList<>();
-        /*
-         * create inital Swarm
-         */
+        /* create inital Swarm */
 //        System.out.println("itte: "+itterations);
         for (int i = 0; i < swarmSize; i++) {
             double[] weights = new double[data.jobs.size()];
-            /*
-             * create inital weights
-             */
+            /* create inital weights */
             for (int j = 0; j < weights.length; j++) {
                 weights[j] = Math.random();
             }
@@ -42,14 +38,14 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
 //        System.out.println("itte: "+itterations);
 
         for (int i = 0; i < swarmWalk; i++) {
-//          Die schnellsten zuerst
+            /* Die schnellsten zuerst */
             swarm.sort((Comparator.comparingInt(Algorithm::getFinishTime)));
 //            System.out.println(i + ". BestFinishTime: " + swarm.get(0).getFinishTime());
-//          auf swarmSize kürzen
+            /* auf swarmSize kürzen */
             while (swarm.size() > swarmSize) {
                 swarm.remove(swarm.size() - 1);
             }
-//          neue 'neighbourhood' erstellen aus den '#neighbourhoodSize' besten
+            /* neue 'neighbourhood' erstellen aus den '#neighbourhoodSize' besten */
             for (int j = 0; j < neighbourhoodSize; j++) {
                 double[] weights = getNewWeights(swarm.get(j).getWeights(), i);
                 GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(new Data(data), weights);
@@ -66,6 +62,14 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
         this.data = swarm.get(0).getData();
     }
 
+    /**
+     * @param weights         ein Array der Gewichte der einzelnen Jobs
+     * @param oldWeightsPower je größer die Zahl, desto weniger wird der Wert geändert.
+     *                        Bsp:
+     *                        oldWeightsPower=3 => 1/4 wird zufällig geändert
+     *                        oldWeightsPower=4 => 1/5 wird zufällig geändert
+     * @return zufällige neue Gewichte der Jobs
+     */
     private double[] getNewWeights(double[] weights, double oldWeightsPower) {
         for (int i = 0; i < weights.length; i++) {
             weights[i] = (weights[i] * oldWeightsPower + Math.random()) / (oldWeightsPower + 1);

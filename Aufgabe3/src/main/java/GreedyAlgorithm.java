@@ -20,7 +20,7 @@ public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
     public void calculate() {
         boolean ready = false;
         while (!ready) {
-            // getOperations
+            /* getOperations */
             List<Operation> operations = new ArrayList<>();
             for (Job job : jobs) {
                 Operation nextOp = job.getNextOperation();
@@ -28,7 +28,7 @@ public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
                     operations.add(job.getNextOperation());
                 }
             }
-            // getNextOperation with weights
+            /* getNextOperation with weights */
             Operation nextOperation = operations.get(0);
             for (Operation operation : operations) {
 //                System.out.println("Job: "+weights[operation.job]+"| NextJob: "+weights[nextOperation.job]);
@@ -37,7 +37,7 @@ public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
                     nextOperation = operation;
                 }
             }
-            // getResource from ResourceId
+            /* getResource from ResourceId */
             Resource nextResource = resources.get(0);
             for (Resource resource : resources) {
                 if (resource.id == nextOperation.resource) {
@@ -45,7 +45,7 @@ public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
                     break;
                 }
             }
-            // get actual LastOperationEnd of the job
+            /* get actual LastOperationEnd of the job */
             int jobEnd = 0;
             for (Job job : jobs) {
                 if (job.id == nextOperation.job) {
@@ -53,10 +53,10 @@ public class GreedyAlgorithm implements Algorithm, AlgorithmWeights {
                     break;
                 }
             }
-            // calc starttime out of Resource (min Starttime combined with duration)
+            /* calc starttime out of Resource (min Starttime combined with duration) */
             int starttime = nextResource.getOptimalTime(jobEnd, nextOperation.duration);
             nextResource.addOperation(nextOperation, starttime);
-            // Check ready
+            /* Check ready */
             ready = true;
             for (Job job : jobs) {
                 if (!job.ready()) {
