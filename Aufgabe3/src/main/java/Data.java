@@ -50,10 +50,13 @@ public class Data {
         /* Je nachdem welcher Algorithmus gewählt ist wird das algorithm-Objekt erstellt */
         if (RandomAlgorithm.class.equals(className)) {
             algorithm = new RandomAlgorithm(this);
+
         } else if (ShortestJobNextAlgorithm.class.equals(className)) {
             algorithm = new ShortestJobNextAlgorithm(this);
+
         } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
             algorithm = new SwarmIntelligenceAlgorithm(this);
+
         } else if (EarliestDueDateAlgorithm.class.equals(className)) {
             /* In EarliestDueDateAlgorithm wird eine dueDate benötigt, diese wird zu nächst zufällig erstellt */
             double[] dueDate = new double[this.jobs.size()];
@@ -94,8 +97,8 @@ public class Data {
         finishTime = getFinishTime(algorithm);
         itterations = algorithm.getItterations();
 
-        System.out.println("  Ende der letzten operation: " + finishTime + "| Laufzeit: " + time + " qs");
-        System.out.println("Anzahl Itterationen: " + itterations + " | Minimale Jobzeit: " + minTime);
+        //System.out.println("  Ende der letzten operation: " + finishTime + "| Laufzeit: " + time + " qs");
+        //System.out.println("Anzahl Itterationen: " + itterations + " | Minimale Jobzeit: " + minTime);
     }
 
     int getminTime() {
