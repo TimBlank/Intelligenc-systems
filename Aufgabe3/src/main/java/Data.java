@@ -37,7 +37,7 @@ public class Data {
         long timeEnd;
         Algorithm algorithm = null;
 
-        System.out.println(className + ":");
+        //System.out.println(className + ":");
 
         for (Job job : this.jobs) {
             for (Operation operation : job.operations) {
@@ -71,6 +71,7 @@ public class Data {
 //            System.out.println(dueDate[i]);
             }
             algorithm = new EarliestDueDateAlgorithm(this, dueDate);
+
         } else if (GreedyAlgorithm.class.equals(className)) {
             /* Erstellt einen Swarm */
             double[] weights = new double[this.jobs.size()];
@@ -97,6 +98,7 @@ public class Data {
         finishTime = getFinishTime(algorithm);
         itterations = algorithm.getItterations();
 
+        /* Zeigt die Metriken pro Json Datei*/
         //System.out.println("  Ende der letzten operation: " + finishTime + "| Laufzeit: " + time + " qs");
         //System.out.println("Anzahl Itterationen: " + itterations + " | Minimale Jobzeit: " + minTime);
     }

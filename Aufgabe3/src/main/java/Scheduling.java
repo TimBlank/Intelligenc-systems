@@ -16,6 +16,8 @@ public class Scheduling {
 //        String json = readFromInputStream(is);
 //        Data data = gson.fromJson(json, Data.class);
 
+        long timeStart;
+        long timeEnd;
         /*
          * Speichert alle Dateinamen aus Ressource in eine Liste
          */
@@ -44,7 +46,8 @@ public class Scheduling {
         int swarmJobtime = 0;
         int swarmtime = 0;
 
-        int runs = 200000; //Wert muss größer geleich 1 sein damit die Funktion laufen kann
+        int runs = 1; //Wert muss größer geleich 1 sein damit die Funktion laufen kann
+        timeStart = System.currentTimeMillis();
         fileLength = files.length;
         for (int j = 0; j < runs; j++) {
             /*
@@ -72,7 +75,7 @@ public class Scheduling {
 
                 /* Random
                  * Es wird zufällig zwischen den möglichen
-                 * Jobs einer, in reihenfolge ausgewählt
+                 * Opertionen gewählt
                  */
                 data = gson.fromJson(json, Data.class);
                 data.work(RandomAlgorithm.class);
@@ -82,7 +85,7 @@ public class Scheduling {
 
                 /* Earliest Due Date
                  * Da kein Due Date für die Jobs mit gegeben wurde
-                 * wird der Gesamt Entzeitpunkt des Jobs
+                 * wird der Gesamt Entzeitpunkt des Jobs + Random wert
                  * als Due Date verwendet
                  */
                 data = gson.fromJson(json, Data.class);
@@ -92,7 +95,9 @@ public class Scheduling {
                 eddtime += data.time;
 
                 /* Greedy
-                 * (longest Operation next)
+                 * Da kein Gewichtung für die Jobs mit gegeben wurde
+                 * wird ein Random wert zwischen 0 und 1
+                 * als Gewichtung verwendet
                  */
                 data = gson.fromJson(json, Data.class);
                 data.work(GreedyAlgorithm.class);
@@ -102,7 +107,7 @@ public class Scheduling {
 
                 /* Swarm Intelligence
                  * Erstellt Greedys mit
-                 * leicht geänderten gewichten
+                 * leicht geänderten Gewichten
                  * übergibt besten Greedy
                  */
                 data = gson.fromJson(json, Data.class);
@@ -111,7 +116,10 @@ public class Scheduling {
                 swarmJobtime += data.finishTime;
                 swarmtime += data.time;
             }
-
+            if ((j % 1000) == 0) {
+                timeEnd = System.currentTimeMillis();
+                System.out.println("Run: " + j + " Zeit: " + (timeEnd - timeStart) / 1000 + " s");
+            }
 
         }
         System.out.println("--------------------------PRE-ERGEBNIS---------------------------------:");

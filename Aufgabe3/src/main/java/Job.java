@@ -38,13 +38,6 @@ public class Job {
         return null;
     }
 
-    Resource getResource(int id) {
-        for (Resource resource : resources) {
-            if (resource.id == id) return resource;
-        }
-        return null;
-    }
-
     /**
      * @return Zeitpunkt der letzten schon gestarteten Operation
      */

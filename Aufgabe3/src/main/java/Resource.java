@@ -32,18 +32,6 @@ public class Resource {
     public void addOperation(Operation operation, int startTime) {
         operations.add(operation);
         operation.setStartTime(startTime);
-//        int endTime = getEndTime();
-//        if (endTime == time) {
-//            operation.startTime = endTime;
-//            operations.add(operation);
-//        } else if (endTime < time) {
-//            operations.add(new Operation(time - endTime));
-//            operation.startTime = getEndTime();
-//            operations.add(operation);
-//        } else {
-////        } else if (endTime>time) {
-//            System.out.println("HIER ist 1 Fehler!");
-//        }
     }
 
     public int getOptimalTime(int jobEnd, int duration) {
