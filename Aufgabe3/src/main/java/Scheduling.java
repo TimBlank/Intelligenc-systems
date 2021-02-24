@@ -111,7 +111,7 @@ public class Scheduling {
                  * übergibt besten Greedy
                  */
                 data = gson.fromJson(json, Data.class);
-                data.work(SwarmIntelligenceAlgorithm.class);
+                data.work(EvolutinaryAlgorithm.class);
                 swarmItts += data.itterations;
                 swarmJobtime += data.finishTime;
                 swarmtime += data.time;

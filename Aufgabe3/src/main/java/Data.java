@@ -54,8 +54,8 @@ public class Data {
         } else if (ShortestJobNextAlgorithm.class.equals(className)) {
             algorithm = new ShortestJobNextAlgorithm(this);
 
-        } else if (SwarmIntelligenceAlgorithm.class.equals(className)) {
-            algorithm = new SwarmIntelligenceAlgorithm(this);
+        } else if (EvolutinaryAlgorithm.class.equals(className)) {
+            algorithm = new EvolutinaryAlgorithm(this);
 
         } else if (EarliestDueDateAlgorithm.class.equals(className)) {
             /* In EarliestDueDateAlgorithm wird eine dueDate benötigt, diese wird zu nächst zufällig erstellt */

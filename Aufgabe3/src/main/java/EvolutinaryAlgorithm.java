@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class SwarmIntelligenceAlgorithm implements Algorithm {
+public class EvolutinaryAlgorithm implements Algorithm {
     Data data;
     int itterations = 0;
 
-    public SwarmIntelligenceAlgorithm(Data data) {
+    public EvolutinaryAlgorithm(Data data) {
         this.data = data;
     }
 
-    private final int swarmSize = 10; // Should be between 10-50
-    private final int neighbourhoodSize = 5; // Should be either 3 or 5
-    private final int swarmWalk = 5; //Should be between 5-20
+    private final int population = 10; // Should be between 10-50
+    private final int neighbourhoodSize = 5; // Should be greater than 3
+    private final int gernartion = 5; //Should be between 5-20
 
     @Override
     public void calculate() {
         List<GreedyAlgorithm> swarm = new ArrayList<>();
-        /* create inital Swarm */
-        for (int i = 0; i < swarmSize; i++) {
+        /* create inital Population */
+        for (int i = 0; i < population; i++) {
             double[] weights = new double[data.jobs.size()];
             /* create inital weights */
             for (int j = 0; j < weights.length; j++) {
@@ -31,13 +31,13 @@ public class SwarmIntelligenceAlgorithm implements Algorithm {
             itterations += greedyAlgorithm.getItterations();
             swarm.add(greedyAlgorithm);
         }
-        itterations = itterations / swarmSize;
-        for (int i = 0; i < swarmWalk; i++) {
+        itterations = itterations / population;
+        for (int i = 0; i < gernartion; i++) {
             /* Die schnellsten zuerst */
             swarm.sort((Comparator.comparingInt(Algorithm::getFinishTime)));
 //            System.out.println(i + ". BestFinishTime: " + swarm.get(0).getFinishTime());
-            /* auf swarmSize kürzen */
-            while (swarm.size() > swarmSize) {
+            /* auf Population kürzen */
+            while (swarm.size() > population) {
                 swarm.remove(swarm.size() - 1);
             }
             /* neue 'neighbourhood' erstellen aus den '#neighbourhoodSize' besten */
